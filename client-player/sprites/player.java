@@ -1,3 +1,5 @@
+package sprites;
+
 /**
  *  This class creates players for the game
  */

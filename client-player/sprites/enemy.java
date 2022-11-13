@@ -1,3 +1,5 @@
+package sprites;
+
 /**
  *  Clase abstracta para los enemigos (focas, aves, hielos)
  */

@@ -35,7 +35,7 @@ public class clientLogic {
     private DataOutputStream clientOutD;
 
     /**
-     * This is the constructor, it finds the server and connects to it.
+     * This is the constructor, it finds the server and connects to it. AGREGAR LOGICA SI ES JUGADOR O OBSERVADOR
      *
      * @param newPort int.
      * @param newIPserver String.
