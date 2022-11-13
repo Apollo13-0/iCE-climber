@@ -21,6 +21,11 @@ public abstract class enemy {
     private int yCoord;
 
     /**
+     * Indicates the current floor of the foca
+     */
+    private int floor;
+
+    /**
      *  Directory of the sprite image
      */
     private String spritePath;
@@ -102,4 +107,21 @@ public abstract class enemy {
     public int getXCoord() {
         return xCoord;
     }
+
+
+    /**
+     * Gets the current floor
+     *
+     * @return Value of current floor
+     */
+    public int getFloor() {
+        return floor;
+    }
+
+    /**
+     * Sets new floor
+     *
+     * @param floor int
+     */
+    public abstract void setFloor(int floor);
 }
