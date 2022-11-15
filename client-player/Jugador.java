@@ -5,9 +5,29 @@ import java.awt.Image;
 
 public class Jugador extends Sprite{
 
+    /**
+     *  Identifier for each player
+     */
+    private int ID;
+
+    /**
+     *  Coord in x
+     */
+    private int xCoord;
+
+    /**
+     *  Coord in y
+     */
+    private int yCoord;
+
     private int dx;
     private int dy;
+
+    /**
+     * Number of player lifes
+     */
     private int vidas;
+
     private String tipoJugador;//Popo o Nana
 
     public Jugador(String tipoJugador){
@@ -104,4 +124,93 @@ public class Jugador extends Sprite{
         vidas = Constantes.LIVES_JUGADOR;
     }
 
+    /**
+     * Gets Number of player lifes.
+     *
+     * @return Value of Number of player lifes.
+     */
+    public int getVidas() {
+        return vidas;
+    }
+
+    /**
+     * Sets new Number of player lifes.
+     *
+     * @param vidas New value of Number of player lifes.
+     */
+    public void setVidas(int vidas) {
+        this.vidas = vidas;
+    }
+
+    /**
+     * Gets Coord in y.
+     *
+     * @return Value of Coord in y.
+     */
+    public int getYCoord() {
+        return yCoord;
+    }
+
+    /**
+     * Sets new tipoJugador.
+     *
+     * @param tipoJugador New value of tipoJugador.
+     */
+    public void setTipoJugador(String tipoJugador) {
+        this.tipoJugador = tipoJugador;
+    }
+
+    /**
+     * Sets new Coord in y.
+     *
+     * @param yCoord New value of Coord in y.
+     */
+    public void setYCoord(int yCoord) {
+        this.yCoord = yCoord;
+    }
+
+    /**
+     * Gets tipoJugador.
+     *
+     * @return Value of tipoJugador.
+     */
+    public String getTipoJugador() {
+        return tipoJugador;
+    }
+
+    /**
+     * Gets Coord in x.
+     *
+     * @return Value of Coord in x.
+     */
+    public int getXCoord() {
+        return xCoord;
+    }
+
+    /**
+     * Sets new Coord in x.
+     *
+     * @param xCoord New value of Coord in x.
+     */
+    public void setXCoord(int xCoord) {
+        this.xCoord = xCoord;
+    }
+
+    /**
+     * Gets Identifier for each player.
+     *
+     * @return Value of Identifier for each player.
+     */
+    public int getID() {
+        return ID;
+    }
+
+    /**
+     * Sets new Identifier for each player.
+     *
+     * @param ID New value of Identifier for each player.
+     */
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 }
