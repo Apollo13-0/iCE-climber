@@ -1,4 +1,5 @@
 package sprites;
+<<<<<<< Updated upstream
 import java.util.Random;
 
 public class ave extends enemy {
@@ -31,4 +32,9 @@ public class ave extends enemy {
             case 4 -> this.setYCoord(175);
         }
     }
+=======
+import sprites.enemy.*;
+
+public abstract class ave extends enemy {
+>>>>>>> Stashed changes
 }
