@@ -10,14 +10,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
-	
+#include "constants.h"
 
-	
+
+struct game {
+	int game_num;
+	int sock_descriptor;
+	int viewers[2];
+};
+
 int main(int argc , char *argv[])
 {
 	int opt = TRUE;
-	int master_socket , addrlen , new_socket , client_socket[MAX_GAMES] ,
-		MAX_GAMES = 30 , activity, i , valread , sd;
+	int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
 	int max_sd;
 	struct sockaddr_in address;
 		
@@ -30,7 +35,7 @@ int main(int argc , char *argv[])
 	char *message = "ECHO Daemon v1.0 \r\n";
 	
 	//initialise all client_socket[] to 0 so not checked
-	for (i = 0; i < MAX_GAMES; i++)
+	for (i = 0; i < MAX_GAMES+MAX_VIEWERS_P_GAME; i++)
 	{
 		client_socket[i] = 0;
 	}
@@ -85,7 +90,7 @@ int main(int argc , char *argv[])
 		max_sd = master_socket;
 			
 		//add child sockets to set
-		for ( i = 0 ; i < MAX_GAMES ; i++)
+		for ( i = 0 ; i < MAX_GAMES+MAX_VIEWERS_P_GAME ; i++)
 		{
 			//socket descriptor
 			sd = client_socket[i];
@@ -120,20 +125,19 @@ int main(int argc , char *argv[])
 			}
 			
 			//inform user of socket number - used in send and receive commands
-			printf("New connection , socket fd is %d , ip is : %s , port : %d
-				\n" , new_socket , inet_ntoa(address.sin_addr) , ntohs
-				(address.sin_port));
-		
+			printf("New connection , socket fd is %d , ip is : %s , port : %d\n" , 
+					new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
+		    
 			//send new connection greeting message
 			if( send(new_socket, message, strlen(message), 0) != strlen(message) )
 			{
 				perror("send");
 			}
-				
+			
 			puts("Welcome message sent successfully");
 				
 			//add new socket to array of sockets
-			for (i = 0; i < MAX_GAMES; i++)
+			for (i = 0; i < MAX_GAMES+MAX_VIEWERS_P_GAME; i++)
 			{
 				//if position is empty
 				if( client_socket[i] == 0 )
@@ -147,7 +151,7 @@ int main(int argc , char *argv[])
 		}
 			
 		//else its some IO operation on some other socket
-		for (i = 0; i < MAX_GAMES; i++)
+		for (i = 0; i < MAX_GAMES+MAX_VIEWERS_P_GAME; i++)
 		{
 			sd = client_socket[i];
 				
@@ -174,7 +178,9 @@ int main(int argc , char *argv[])
 					//set the string terminating NULL byte on the end
 					//of the data read
 					buffer[valread] = '\0';
+					
 					send(sd , buffer , strlen(buffer) , 0 );
+					printf("%s\n", buffer);
 				}
 			}
 		}
