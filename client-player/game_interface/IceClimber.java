@@ -1,5 +1,8 @@
+package game_interface;
+
+import game_interface.Board;
+
 import javax.swing.JFrame;
-import java.awt.*;
 
 public class IceClimber extends JFrame {
     public IceClimber(){

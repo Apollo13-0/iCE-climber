@@ -1,9 +1,11 @@
-import java.awt.*;
+package game_interface;
+
+import game_interface.Sprite;
+
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
-import java.awt.Image;
 
-public class Jugador extends Sprite{
+public class Jugador extends Sprite {
 
     /**
      *  Identifier for each player
@@ -43,13 +45,13 @@ public class Jugador extends Sprite{
 
     private void loadImage(){
         if(tipoJugador.equals("Popo")){
-            var ii = new ImageIcon("images/poporun.png"); //imagen nana
+            var ii = new ImageIcon("images/popostand.png"); //imagen nana
             image = ii.getImage();
             //ImageIcon ii = new ImageIcon("images/poporun.png");
             //Image scaleImage = ii.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
         }
         else{
-            var ii = new ImageIcon("images/poporun.png"); //imagen nana
+            var ii = new ImageIcon("images/poporunright.png"); //imagen nana
             image = ii.getImage();
         }
     }
@@ -64,8 +66,8 @@ public class Jugador extends Sprite{
         if(x >= Constantes.WIDTH - imageWidth){
             x = Constantes.WIDTH - imageWidth;
         }
-        //if(y >= Constantes.HEIGHT - imageHeight){ //Hay que revisar como funcionan los limites. Si se construye de arriba hacia abajo o vicerversa.
-           // y = Constantes.HEIGHT - imageHeight;
+        //if(y >= game_interface.Constantes.HEIGHT - imageHeight){ //Hay que revisar como funcionan los limites. Si se construye de arriba hacia abajo o vicerversa.
+           // y = game_interface.Constantes.HEIGHT - imageHeight;
        // }
     }
 

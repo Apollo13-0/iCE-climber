@@ -1,3 +1,5 @@
+import game_interface.IceClimber;
+
 import java.awt.*;
 
 public class main extends Thread {

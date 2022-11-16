@@ -1,3 +1,5 @@
+package game_interface;
+
 public interface Constantes {
     int WIDTH = 800;
     int HEIGHT = 600;

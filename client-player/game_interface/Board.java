@@ -1,4 +1,7 @@
+package game_interface;
 
+import game_interface.Jugador;
+import game_interface.Foca;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -8,15 +11,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
-import java.util.Objects;
 
 public class Board extends JPanel{
     private Timer timer;
@@ -30,6 +30,12 @@ public class Board extends JPanel{
     private int gameLives2;
     private boolean inGame = true;
 
+    //enemies
+    private Foca foca;
+    private Ave ave; //Hace falta meterlo en una lista.
+    private Ave ave2;
+    private Ave[] aves;
+
     public Board(){
         initBoard();
     }
@@ -40,7 +46,7 @@ public class Board extends JPanel{
     }
 
     /**
-     * Inicializador de la clase Board
+     * Inicializador de la clase game_interface.Board
      */
     private void initBoard(){
 
@@ -61,6 +67,9 @@ public class Board extends JPanel{
         jugador2 = new Jugador("Nana");
         gameLives1 = 3;
         gameLives2 = 3;
+        foca = new Foca(1, "ID");
+        ave = new Ave(3);
+        ave2 = new Ave(2);
 
         timer = new Timer(20, new Gamecycle());
         timer.start();
@@ -95,6 +104,9 @@ public class Board extends JPanel{
 
         g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
         g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
+        g2d.drawImage(foca.getImage(),foca.getX(),foca.getY(),foca.getImageWidth(),foca.getImageHeight(),this);
+        g2d.drawImage(ave.getImage(),ave.getX(),ave.getY(),ave.getImageWidth(),ave.getImageHeight(),this);
+        g2d.drawImage(ave2.getImage(),ave2.getX(),ave2.getY(),ave2.getImageWidth(),ave2.getImageHeight(),this);
     }
 
     /**
@@ -174,6 +186,10 @@ public class Board extends JPanel{
     private void doGameCycle(){
         jugador1.movement();
         jugador2.movement();
+        foca.movement();
+        ave.movement();
+        ave2.movement();
+        //System.out.println("HOLA IGNACIO"); //Agregue aquí la actualizacion de la informacion del servidor.
 
         repaint();
     }

@@ -1,3 +1,5 @@
+package game_interface;
+
 import javax.swing.*;
 import java.awt.Image;
 import java.awt.Rectangle;
