@@ -1,9 +1,9 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import com.google.gson.Gson;
+
 
 /**
  * This class handles the client connection.
@@ -33,6 +33,7 @@ public class clientLogic {
      * This lets tje application write primitive Java data type.
      */
     private DataOutputStream clientOutD;
+
 
     /**
      * This is the constructor, it finds the server and connects to it. AGREGAR LOGICA SI ES JUGADOR O OBSERVADOR
@@ -74,48 +75,33 @@ public class clientLogic {
     }
 
     /**
-     * This method connect to the server and send the jackson.
+     * This method connect to the server and sends and reads json files.
      *
      * @param jacksonStr New jackson String.
      */
     public void writeSocket(String jacksonStr) {
         try {
-            this.clientOutD.writeUTF(jacksonStr);
-            this.clientSocket.setKeepAlive(true);
-        } catch (IOException ioException) {
-            closeConexion();
+            this.clientOutD.writeUTF(jacksonStr); // Envia json
+            String message = this.inputSocketInD.readUTF(); // lee json
+            System.out.println(message); // aqui deberia insertarlo en la clase que va a actualizarla info
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * This method waits for the server and if there is one server it read the information and update the
-     * information.
-
-    public void readSockect() {
-        ObjectMapper mapper = new ObjectMapper();
-        Thread thread = new Thread(() -> {
-            try {
-                String message = this.inputSocketInD.readUTF();
-
-                UpdateInfo Info = mapper.readValue(message, UpdateInfo.class);
-
-                Game.getInstance().setUpdateInfo(Info);
-
-                this.clientSocket.setKeepAlive(true);
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } catch (SocketException e) {
-                closeConexion();
-            } catch (IOException e) {
-                closeConexion();
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-    }
+     *  este metodo no esta funcionando
      */
+    public void readSockect() {
+        try {
+            String message = this.inputSocketInD.readUTF();
+           // String message = this.in.readLine();
+            System.out.println(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * This method closes the connection between the server and the client.
