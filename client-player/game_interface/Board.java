@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 public class Board extends JPanel{
     private Timer timer;
@@ -35,6 +36,12 @@ public class Board extends JPanel{
     private Ave ave; //Hace falta meterlo en una lista.
     private Ave ave2;
     private Ave[] aves;
+
+    //bloques
+    private Bloque[] bloques4p;
+    private Bloque[] bloques3p;
+    private Bloque[] bloques2p;
+    private Bloque[] bloques1p;
 
     public Board(){
         initBoard();
@@ -63,6 +70,10 @@ public class Board extends JPanel{
      */
 
     private void gameInit(){
+        bloques4p = new Bloque[Constantes.NUMBER_OF_BLOCKS];
+        bloques3p = new Bloque[Constantes.NUMBER_OF_BLOCKS2];
+        bloques2p = new Bloque[Constantes.NUMBER_OF_BLOCKS3];
+        bloques1p = new Bloque[Constantes.NUMBER_OF_BLOCKS4];
         jugador1 = new Jugador("Popo");
         jugador2 = new Jugador("Nana");
         gameLives1 = 3;
@@ -70,6 +81,42 @@ public class Board extends JPanel{
         foca = new Foca(1, "ID");
         ave = new Ave(3);
         ave2 = new Ave(2);
+
+        //Piso 4
+        int k = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques4p[k] = new Bloque(j * 20 + 10, i * 20 + 25);
+                k++;
+            }
+        }
+
+        //Piso 3
+        int l = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques3p[l] = new Bloque(j * 20 + 10, i * 20 + 315);
+                l++;
+            }
+        }
+
+        //Piso 2
+        int m = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques2p[m] = new Bloque(j * 20 + 10, i * 20 + 560);
+                m++;
+            }
+        }
+
+        //Piso 1
+        int n = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques1p[n] = new Bloque(j * 20 + 10, i * 20 + 400);
+                n++;
+            }
+        }
 
         timer = new Timer(20, new Gamecycle());
         timer.start();
@@ -101,6 +148,34 @@ public class Board extends JPanel{
      * @param g2d
      */
     private void drawObjects(Graphics2D g2d){
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS; i++){
+            if(!bloques4p[i].isDestroyed()){
+                g2d.drawImage(bloques4p[i].getImage(), bloques4p[i].getX(), bloques4p[i].getY(), bloques4p[i].getImageWidth(), bloques4p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS2; i++){
+            if(!bloques3p[i].isDestroyed()){
+                g2d.drawImage(bloques3p[i].getImage(), bloques3p[i].getX(), bloques3p[i].getY(), bloques3p[i].getImageWidth(), bloques3p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS3; i++){
+            if(!bloques2p[i].isDestroyed()){
+                g2d.drawImage(bloques2p[i].getImage(), bloques2p[i].getX(), bloques2p[i].getY(), bloques2p[i].getImageWidth(), bloques2p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS4; i++){
+            if(!bloques1p[i].isDestroyed()){
+                g2d.drawImage(bloques1p[i].getImage(), bloques1p[i].getX(), bloques1p[i].getY(), bloques1p[i].getImageWidth(), bloques1p[i].getImageHeight(),
+                        this);
+            }
+        }
 
         g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
         g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
@@ -184,6 +259,7 @@ public class Board extends JPanel{
      * Metodos
      */
     private void doGameCycle(){
+
         jugador1.movement();
         jugador2.movement();
         foca.movement();

@@ -22,8 +22,14 @@ public class Jugador extends Sprite {
      */
     private int yCoord;
 
-    private int dx;
-    private int dy;
+    private float dx;
+    private float dy;
+
+    //Salto
+    private float speed;
+    private float jumpStrength;
+    private float weight;
+    public int floorHeight = Constantes.HEIGHT - 61;
 
     /**
      * Number of player lifes
@@ -38,6 +44,9 @@ public class Jugador extends Sprite {
     }
 
     private void initJugador(){
+        y = floorHeight;
+        speed = 3;
+        weight = 1;
         loadImage();
         getImageDimensions();
         resetState();
@@ -51,14 +60,14 @@ public class Jugador extends Sprite {
             //Image scaleImage = ii.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
         }
         else{
-            var ii = new ImageIcon("images/poporunright.png"); //imagen nana
+            var ii = new ImageIcon("images/popostand.png"); //imagen nana
             image = ii.getImage();
         }
     }
 
     public void movement(){
         x += dx;
-        y -= dy;
+        y += dy;
 
         if(x <= 0){
             x = 0;
@@ -80,9 +89,17 @@ public class Jugador extends Sprite {
             if(key == KeyEvent.VK_RIGHT){
                 dx = 3;
             }
-            if(key == KeyEvent.VK_UP){ //hay que revisar tambien.
-                dy = 2;
+            if(key == KeyEvent.VK_UP && y >= floorHeight){ //hay que revisar tambien.
+                jumpStrength = 24;
+                dy -= jumpStrength;
+                jumpStrength -= weight;
+                System.out.println("salto");
             }
+            if(y >= floorHeight){
+                y = floorHeight;
+            }
+
+
         }else{if(key == KeyEvent.VK_A){
             dx = -3;
         }
@@ -90,7 +107,7 @@ public class Jugador extends Sprite {
                 dx = 3;
             }
             if(key == KeyEvent.VK_W){ //hay que revisar tambien.
-                dy = 2;
+                dy = -2;
             }
         }
     }
@@ -123,6 +140,7 @@ public class Jugador extends Sprite {
     private void resetState(){
         x = Constantes.INIT_JUGADOR_X;
         y = Constantes.INIT_JUGADOR_Y;
+        //y = floorHeight;
         vidas = Constantes.LIVES_JUGADOR;
     }
 
