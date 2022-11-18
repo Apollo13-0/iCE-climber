@@ -22,26 +22,26 @@ public class Ave extends Sprite {
 
     public Ave(int floor){
         initAve(floor);
-
     }
 
     private void initAve(int floor){
-        //this.x = x;
-        //this.y = y;
-        //this.floor = floor;
+
         this.points = Constantes.AVE_POINTS;
+
         Random booleandir = new Random();
-        this.booleandir = booleandir.nextBoolean();
         Random num = new Random();
+        this.booleandir = booleandir.nextBoolean();
         this.n1 = num.nextInt(400);
         this.n2 = num.nextInt(150);
+
         hit = false;
+
         this.setName("ave");
         this.setDir();
         this.setFloorC(floor);
         loadImage();
         getImageDimensions();
-        //resetState();
+
     }
 
     private void loadImage(){
@@ -50,15 +50,12 @@ public class Ave extends Sprite {
     }
 
     public void movement(){
+
         if(x <= 0 || x >= Constantes.WIDTH - imageWidth){
             speed = speed * -1;
         }
         x = x + speed;
-        //Random num = new Random();
-        //Random booleandir = new Random();
-        //boolean direccion = booleandir.nextBoolean();
-        //int n = num.nextInt(400);
-        //int na = num.nextInt(150);
+
         if(x >= this.n1 && x <= (this.n2 + this.n1)){
             if(y <= 0 || y >= Constantes.HEIGHT- imageHeight){
                 speed = speed * -1;
@@ -68,14 +65,7 @@ public class Ave extends Sprite {
             }else{
                 y = y + speed;
             }
-
-
         }
-
-
-        //if(x >= Constantes.WIDTH - imageWidth){
-          //  x = Constantes.WIDTH - imageWidth;
-        //}
     }
 
     /**
@@ -84,23 +74,12 @@ public class Ave extends Sprite {
     private void resetState(){
         x = 100;
         y = 100;
-
-
     }
 
     /**
      * Indicates the direction of the ave
      */
     private String dir;
-
-    /**
-     *  builts a ave object in a desired floor
-     */
-    //public ave(int floor, String dir){
-        //this.setName("ave");
-        //this.setSpritePath("resources\ave.png");
-        //this.setDir(dir);
-   // }
 
     /**
      *  Sets the floor and Y coords of the ave
@@ -110,7 +89,6 @@ public class Ave extends Sprite {
     public void setFloorC(int floor) {
         this.setFloor(floor);
 
-        // revisar coordenadas
         switch (floor){
             case 1, 5, 9, 13 -> this.setY(531);
             case 2, 6, 10, 14 -> this.setY(386);
@@ -120,10 +98,18 @@ public class Ave extends Sprite {
 
     }
 
+    /**
+     * gets the diretion
+     * @return String
+     */
     public String getDir() {
         return dir;
     }
 
+    /**
+     * Sets the direction
+     *
+     */
     public void setDir() {
         this.setX(1);
     }

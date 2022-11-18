@@ -1,8 +1,6 @@
 package client;
 
-import game_interface.Board;
-import game_interface.Jugador;
-import game_interface.Sprite;
+import game_interface.*;
 
 public class updateInfo {
 
@@ -59,23 +57,46 @@ public class updateInfo {
     /**
      *  all the blocks on the game
      */
-    //private Bloque[] bloqueList;
+    private Bloque[] bloqueList;
 
     /**
      *  all the bonus on the game
      */
-    //privete verduras[] verdurasList;
+    private Verduras[] verdurasList;
 
     /**
      *  indicates if the game is in the bonus phase
      */
     private boolean bonusPhase;
 
+    /**
+     *  indicates the level of the game
+     */
     private int level;
 
+    /**
+     *  constructor
+     */
     public updateInfo(){ }
 
-    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, Sprite[] spritesList, boolean bonusPhase, int level) {
+    /**
+     * constructor with all the information
+     * @param ID int
+     * @param player1X int
+     * @param player1Y int
+     * @param player2X int
+     * @param player2Y int
+     * @param lifePlayer1 int
+     * @param lifePlayer2 int
+     * @param scorePlayer1 int
+     * @param scorePlayer2 int
+     * @param spritesList Sprite
+     * @param bloqueList Bloque
+     * @param verdurasList Verdura
+     * @param bonusPhase boolean
+     * @param level int
+     */
+    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, Sprite[] spritesList,Bloque[] bloqueList,Verduras[] verdurasList, boolean bonusPhase, int level) {
         this.ID = ID;
         this.player1X = player1X;
         this.player1Y = player1Y;
@@ -86,11 +107,17 @@ public class updateInfo {
         this.scorePlayer1 = scorePlayer1;
         this.scorePlayer2 = scorePlayer2;
         this.spritesList = spritesList;
+        this.bloqueList = bloqueList;
+        this.verdurasList = verdurasList;
         this.bonusPhase = bonusPhase;
         this.level = level;
     }
 
-
+    /**
+     * sets all the information for one player
+     * @param jugador Jugador
+     * @param board Board
+     */
     public void setSingle(Jugador jugador, Board board){
         this.setPlayer1X(jugador.getX());
         this.setPlayer1Y(jugador.getY());
@@ -100,6 +127,12 @@ public class updateInfo {
         this.setLevel(board.getLevel());
     }
 
+    /**
+     * sets all the information for 2 players
+     * @param jugador1 Jugador
+     * @param jugador2 Jugador
+     * @param board Board
+     */
     public void setCoop(Jugador jugador1, Jugador jugador2, Board board){
         this.setPlayer1X(jugador1.getX());
         this.setPlayer1Y(jugador1.getY());
@@ -295,10 +328,18 @@ public class updateInfo {
         return lifePlayer1;
     }
 
+    /**
+     *  Gets level
+     * @return int
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Sets level
+     * @param level int
+     */
     public void setLevel(int level) {
         this.level = level;
     }

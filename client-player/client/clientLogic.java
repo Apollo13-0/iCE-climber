@@ -97,7 +97,6 @@ public class clientLogic {
     public void readSockect() {
         try {
             String message = this.inputSocketInD.readUTF();
-           // String message = this.in.readLine();
             System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
