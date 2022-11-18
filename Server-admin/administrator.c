@@ -11,76 +11,33 @@
 #include <netinet/in.h>
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
 #include "constants.h"
-
-
+#include <pthread.h>
 struct game {
 	int game_num;
 	int sock_descriptor;
-	int viewers[2];
+	int viewers[MAX_VIEWERS_P_GAME];
 };
 
-int main(int argc , char *argv[])
-{
-	int opt = TRUE;
-	int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
-	int max_sd;
-	struct sockaddr_in address;
-		
-	char buffer[1025]; //data buffer of 1K
-		
-	//set of socket descriptors
-	fd_set readfds;
-		
-	//a message
-	char *message = "ECHO Daemon v1.0 \r\n";
+
+///globals
+int opt = TRUE;
+int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
+int max_sd;
+struct sockaddr_in address;
+struct game games[MAX_GAMES];
 	
-	//initialise all client_socket[] to 0 so not checked
-	for (i = 0; i < MAX_GAMES+MAX_VIEWERS_P_GAME; i++)
-	{
-		client_socket[i] = 0;
-	}
-		
-	//create a master socket
-	if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
-	{
-		perror("socket failed");
-		exit(EXIT_FAILURE);
-	}
+char buffer[1025]; //data buffer of 1K
 	
-	//set master socket to allow multiple connections ,
-	//this is just a good habit, it will work without this
-	if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-		sizeof(opt)) < 0 )
-	{
-		perror("setsockopt");
-		exit(EXIT_FAILURE);
-	}
+//set of socket descriptors
+fd_set readfds;
 	
-	//type of socket created
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = inet_addr(DEFAULT_IP);
-	address.sin_port = htons( PORT );
-		
-	//bind the socket to localhost port 8888
-	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
-	{
-		perror("bind failed");
-		exit(EXIT_FAILURE);
-	}
-	printf("Listener on port %d \n", PORT);
-		
-	//try to specify maximum of 3 pending connections for the master socket
-	if (listen(master_socket, 3) < 0)
-	{
-		perror("listen");
-		exit(EXIT_FAILURE);
-	}
-		
-	//accept the incoming connection
-	addrlen = sizeof(address);
-	puts("Waiting for connections ...");
-		
-	while(TRUE)
+//a message
+char *message = "ECHO Daemon v1.0 \r\n";
+int running = 1;
+
+
+void *check_incoming_clients(){
+	while(running==TRUE)
 	{
 		//clear the socket set
 		FD_ZERO(&readfds);
@@ -180,11 +137,72 @@ int main(int argc , char *argv[])
 					buffer[valread] = '\0';
 					
 					send(sd , buffer , strlen(buffer) , 0 );
-					printf("%s\n", buffer);
+					printf("%s", buffer);
 				}
 			}
 		}
 	}
+
+}
+
+int main(int argc , char *argv[])
+{
+	
+	//initialise all client_socket[] to 0 so not checked
+	for (i = 0; i < MAX_GAMES+MAX_VIEWERS_P_GAME; i++)
+	{
+		client_socket[i] = 0;
+	}
+
+	for (i = 0; i < MAX_GAMES;i++){
+		games[i].game_num = 0;
+		games[i].sock_descriptor = 0;
+		games[i].viewers[0] = 0;
+		games[i].viewers[1] = 0;
+	}	
+	//create a master socket
+	if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
+	{
+		perror("socket failed");
+		exit(EXIT_FAILURE);
+	}
+	
+	//set master socket to allow multiple connections ,
+	//this is just a good habit, it will work without this
+	if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+		sizeof(opt)) < 0 )
+	{
+		perror("setsockopt");
+		exit(EXIT_FAILURE);
+	}
+	
+	//type of socket created
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = inet_addr(DEFAULT_IP);
+	address.sin_port = htons( PORT );
 		
+	//bind the socket to localhost port 8888
+	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
+	{
+		perror("bind failed");
+		exit(EXIT_FAILURE);
+	}
+	printf("Listener on port %d \n", PORT);
+		
+	//try to specify maximum of 3 pending connections for the master socket
+	if (listen(master_socket, 3) < 0)
+	{
+		perror("listen");
+		exit(EXIT_FAILURE);
+	}
+		
+	//accept the incoming connection
+	addrlen = sizeof(address);
+	puts("Waiting for connections ...");
+
+	pthread_t check_clients;
+	pthread_create(&check_clients, NULL, check_incoming_clients, NULL);
+	
+	
 	return 0;
 }
