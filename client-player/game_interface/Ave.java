@@ -45,7 +45,7 @@ public class Ave extends Sprite {
     }
 
     private void loadImage(){
-        var ii = new ImageIcon("images/popostand.png");
+        var ii = new ImageIcon("images/ave.png");
         image = ii.getImage();
     }
 
@@ -112,10 +112,10 @@ public class Ave extends Sprite {
 
         // revisar coordenadas
         switch (floor){
-            case 1, 5, 9, 13 -> this.setY(539);
-            case 2, 6, 10, 14 -> this.setY(389);
-            case 3, 7, 11, 15 -> this.setY(239);
-            case 4, 8, 12 -> this.setY(89);
+            case 1, 5, 9, 13 -> this.setY(531);
+            case 2, 6, 10, 14 -> this.setY(386);
+            case 3, 7, 11, 15 -> this.setY(241);
+            case 4, 8, 12 -> this.setY(96);
         }
 
     }

@@ -18,10 +18,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 public class Board extends JPanel{
     private Timer timer;
     private String message = "Game Over";
+    public String tipoJuego;
     private Jugador jugador1; //Popo
     private Jugador jugador2; //Nana
     private int scoreJ1 = 0; //Puntos Popo
@@ -40,8 +42,15 @@ public class Board extends JPanel{
     private Ave ave2;
     private Ave[] aves;
 
-    public Board(){
-        initBoard();
+    //bloques
+    private Bloque[] bloques5p;
+    private Bloque[] bloques4p;
+    private Bloque[] bloques3p;
+    private Bloque[] bloques2p;
+    private Bloque[] bloques1p;
+
+    public Board(String tipoJuego){
+        initBoard(tipoJuego);
     }
 
     public static void updateGameDetails(){
@@ -51,8 +60,9 @@ public class Board extends JPanel{
     /**
      * Inicializador de la clase game_interface.Board
      */
-    private void initBoard(){
+    private void initBoard(String tipoJuego){
 
+        this.tipoJuego = tipoJuego;
         addKeyListener(new TAdapter());
         setFocusable(true);
         setPreferredSize(new Dimension(Constantes.WIDTH, Constantes.HEIGHT));
@@ -67,13 +77,69 @@ public class Board extends JPanel{
      */
 
     private void gameInit(){
-        jugador1 = new Jugador("Popo");
-        jugador2 = new Jugador("Nana");
-        gameLives1 = 3;
-        gameLives2 = 3;
-        foca = new Foca(1, "ID");
+        bloques4p = new Bloque[Constantes.NUMBER_OF_BLOCKS];
+        bloques3p = new Bloque[Constantes.NUMBER_OF_BLOCKS2];
+        bloques2p = new Bloque[Constantes.NUMBER_OF_BLOCKS3];
+        bloques1p = new Bloque[Constantes.NUMBER_OF_BLOCKS4];
+        bloques5p = new Bloque[Constantes.NUMBER_OF_BLOCKS5];
+        if(this.tipoJuego.equals("Single")){
+            jugador1 = new Jugador("Popo");
+            gameLives1 = 3;
+        }
+        if(this.tipoJuego.equals("Coop")){
+            jugador1 = new Jugador("Popo");
+            jugador2 = new Jugador("Nana");
+            gameLives1 = 3;
+            gameLives2 = 3;
+        }
+        foca = new Foca(4, "ID");
         ave = new Ave(3);
         ave2 = new Ave(2);
+
+        //Piso 4
+        int k = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques4p[k] = new Bloque(j * 20 + 10, i * 20 + 30);
+                k++;
+            }
+        }
+
+        //Piso 3
+        int l = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques3p[l] = new Bloque(j * 20 + 10, i * 20 + 175);
+                l++;
+            }
+        }
+
+        //Piso 2
+        int m = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques2p[m] = new Bloque(j * 20 + 10, i * 20 + 320);
+                m++;
+            }
+        }
+
+        //Piso 1
+        int n = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques1p[n] = new Bloque(j * 20 + 10, i * 20 + 465);
+                n++;
+            }
+        }
+
+        //Piso 5
+        int o = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques5p[o] = new Bloque(j * 20 + 10, i * 20 + 610);
+                o++;
+            }
+        }
 
         timer = new Timer(20, new Gamecycle());
         timer.start();
@@ -106,8 +172,50 @@ public class Board extends JPanel{
      */
     private void drawObjects(Graphics2D g2d){
 
-        g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
-        g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS; i++){
+            if(!bloques4p[i].isDestroyed()){
+                g2d.drawImage(bloques4p[i].getImage(), bloques4p[i].getX(), bloques4p[i].getY(), bloques4p[i].getImageWidth(), bloques4p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS2; i++){
+            if(!bloques3p[i].isDestroyed()){
+                g2d.drawImage(bloques3p[i].getImage(), bloques3p[i].getX(), bloques3p[i].getY(), bloques3p[i].getImageWidth(), bloques3p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS3; i++){
+            if(!bloques2p[i].isDestroyed()){
+                g2d.drawImage(bloques2p[i].getImage(), bloques2p[i].getX(), bloques2p[i].getY(), bloques2p[i].getImageWidth(), bloques2p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS4; i++){
+            if(!bloques1p[i].isDestroyed()){
+                g2d.drawImage(bloques1p[i].getImage(), bloques1p[i].getX(), bloques1p[i].getY(), bloques1p[i].getImageWidth(), bloques1p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS5; i++){
+            if(!bloques5p[i].isDestroyed()){
+                g2d.drawImage(bloques5p[i].getImage(), bloques5p[i].getX(), bloques5p[i].getY(), bloques5p[i].getImageWidth(), bloques5p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        if(this.tipoJuego.equals("Single")){
+            g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
+        }
+        if(this.tipoJuego.equals("Coop")){
+            g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
+            g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
+        }
+
+
         g2d.drawImage(foca.getImage(),foca.getX(),foca.getY(),foca.getImageWidth(),foca.getImageHeight(),this);
         g2d.drawImage(ave.getImage(),ave.getX(),ave.getY(),ave.getImageWidth(),ave.getImageHeight(),this);
         g2d.drawImage(ave2.getImage(),ave2.getX(),ave2.getY(),ave2.getImageWidth(),ave2.getImageHeight(),this);
@@ -148,15 +256,21 @@ public class Board extends JPanel{
     /**
      * Clase para chequear las teclas (cuando son presionadas o dejan de estarlo).
      */
-    private class TAdapter extends KeyAdapter{
+    private class TAdapter extends KeyAdapter {
         /**
          * Metodo para chequear si un tecla dejar de estar presionada.
          * @param e
          */
         @Override
         public void keyReleased(KeyEvent e){
-            jugador1.keyReleased(e);
-            jugador2.keyReleased(e);
+            if(jugador2 == null){
+                jugador1.keyReleased(e);
+            }else{
+                jugador1.keyReleased(e);
+                jugador2.keyReleased(e);
+            }
+            //jugador1.keyReleased(e);
+            //jugador2.keyReleased(e);
         }
 
         /**
@@ -165,8 +279,15 @@ public class Board extends JPanel{
          */
         @Override
         public void keyPressed(KeyEvent e){
-            jugador1.keyPressed(e);
-            jugador2.keyPressed(e);
+
+            if(jugador2 == null){
+                jugador1.keyPressed(e);
+            }else{
+                jugador1.keyPressed(e);
+                jugador2.keyPressed(e);
+            }
+            //jugador1.keyPressed(e);
+            //jugador2.keyPressed(e);
         }
     }
 
@@ -188,8 +309,15 @@ public class Board extends JPanel{
      * Metodos
      */
     private void doGameCycle(){
-        jugador1.movement();
-        jugador2.movement();
+
+        if(this.tipoJuego.equals("Single")){
+            jugador1.movement();
+        }
+
+        if(this.tipoJuego.equals("Coop")){
+            jugador1.movement();
+            jugador2.movement();
+        }
         foca.movement();
         ave.movement();
         ave2.movement();

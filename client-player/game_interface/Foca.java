@@ -83,10 +83,10 @@ public class Foca extends Sprite {
 
         // revisar coordenadas
         switch (floor){
-            case 1, 5, 9, 13 -> this.setY(539);
-            case 2, 6, 10, 14 -> this.setY(389);
-            case 3, 7, 11, 15 -> this.setY(239);
-            case 4, 8, 12 -> this.setY(89);
+            case 1, 5, 9, 13 -> this.setY(549);
+            case 2, 6, 10, 14 -> this.setY(404);
+            case 3, 7, 11, 15 -> this.setY(259);
+            case 4, 8, 12 -> this.setY(114);
         }
 
     }
