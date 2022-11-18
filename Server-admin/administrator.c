@@ -12,6 +12,7 @@
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
 #include "constants.h"
 #include <pthread.h>
+#include <json-c/json.h>
 struct game {
 	int game_num;
 	int sock_descriptor;
@@ -136,8 +137,10 @@ void *check_incoming_clients(){
 					//of the data read
 					buffer[valread] = '\0';
 					
+					
 					send(sd , buffer , strlen(buffer) , 0 );
 					printf("%s", buffer);
+
 				}
 			}
 		}
