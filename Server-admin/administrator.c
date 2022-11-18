@@ -17,16 +17,23 @@ struct game {
 	int game_num;
 	int sock_descriptor;
 	int viewers[MAX_VIEWERS_P_GAME];
+	int viewer_num;
 };
 
-
+const char *response_to_request(int answer){
+	struct json_object *response_to_request = json_object_new_object();
+	json_object_object_add(response_to_request, "tipo", json_object_new_string("Respuesta solicitud"));
+	json_object_object_add(response_to_request, "error", json_object_new_int(answer));
+	char *err_string = json_object_to_json_string(response_to_request);
+	return err_string;
+}
 ///globals
 int opt = TRUE;
 int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
 int max_sd;
+int game_num;
 struct sockaddr_in address;
 struct game games[MAX_GAMES];
-	
 char buffer[1025]; //data buffer of 1K
 	
 //set of socket descriptors
@@ -38,7 +45,7 @@ int running = 1;
 
 
 void *check_incoming_clients(){
-	printf("Entered thread for incoming clients...");
+	printf("Entered thread for incoming clients...\n");
 	while(running==TRUE)
 	{
 		//clear the socket set
@@ -138,7 +145,36 @@ void *check_incoming_clients(){
 					//of the data read
 					buffer[valread] = '\0';
 					
+					//json parsing
+					struct json_object *parsed_json;
+					struct json_object *tipo;
+
+					parsed_json = json_tokener_parse(buffer);
+					json_object_object_get_ex(parsed_json,"tipo",&tipo);
+
+					char* msg_type = json_object_get_string(tipo);
+
+					//solicitud de juego
+					if (msg_type == "solicitud juego"){
+						//revisa si la cantidad maxima de juegos no ha sido alcanzada
+						if (game_num<MAX_GAMES){
+							games[game_num].game_num = game_num;
+							games[game_num].sock_descriptor = sd;
+							game_num++;
+							//sends aproval and game number
+							send(sd, response_to_request(game_num), strlen(response_to_request(game_num)),0);
+						}
+						else
+						{
+
+							//sends dissaproval
+							send(sd, response_to_request(REQUEST_DENIED), strlen(response_to_request(REQUEST_DENIED)),0);
+
+						}
+						
+					}
 					
+
 					send(sd , buffer , strlen(buffer) , 0 );
 					printf("%s", buffer);
 
@@ -163,6 +199,7 @@ int main(int argc , char *argv[])
 		games[i].sock_descriptor = 0;
 		games[i].viewers[0] = 0;
 		games[i].viewers[1] = 0;
+		games[i].viewer_num = 0;
 	}	
 	//create a master socket
 	if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
@@ -209,6 +246,6 @@ int main(int argc , char *argv[])
 	pthread_join(check_clients, NULL);
 
 	
-	
+
 	return 0;
 }

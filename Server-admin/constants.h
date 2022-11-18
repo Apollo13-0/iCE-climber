@@ -4,3 +4,5 @@
 #define TRUE 1
 #define FALSE 0
 #define PORT 8000
+#define ERR_MAX_GAMES_REACHED "/json_errors/max_games_reached.json"
+#define REQUEST_DENIED -1
