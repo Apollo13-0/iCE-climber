@@ -22,6 +22,7 @@ import java.util.Objects;
 public class Board extends JPanel{
     private Timer timer;
     private String message = "Game Over";
+    public String tipoJuego;
     private Jugador jugador1; //Popo
     private Jugador jugador2; //Nana
     private int scoreJ1 = 0; //Puntos Popo
@@ -38,13 +39,14 @@ public class Board extends JPanel{
     private Ave[] aves;
 
     //bloques
+    private Bloque[] bloques5p;
     private Bloque[] bloques4p;
     private Bloque[] bloques3p;
     private Bloque[] bloques2p;
     private Bloque[] bloques1p;
 
-    public Board(){
-        initBoard();
+    public Board(String tipoJuego){
+        initBoard(tipoJuego);
     }
 
     public static void updateGameDetails(){
@@ -55,8 +57,9 @@ public class Board extends JPanel{
     /**
      * Inicializador de la clase game_interface.Board
      */
-    private void initBoard(){
+    private void initBoard(String tipoJuego){
 
+        this.tipoJuego = tipoJuego;
         addKeyListener(new TAdapter());
         setFocusable(true);
         setPreferredSize(new Dimension(Constantes.WIDTH, Constantes.HEIGHT));
@@ -74,11 +77,18 @@ public class Board extends JPanel{
         bloques3p = new Bloque[Constantes.NUMBER_OF_BLOCKS2];
         bloques2p = new Bloque[Constantes.NUMBER_OF_BLOCKS3];
         bloques1p = new Bloque[Constantes.NUMBER_OF_BLOCKS4];
-        jugador1 = new Jugador("Popo");
-        jugador2 = new Jugador("Nana");
-        gameLives1 = 3;
-        gameLives2 = 3;
-        foca = new Foca(1, "ID");
+        bloques5p = new Bloque[Constantes.NUMBER_OF_BLOCKS5];
+        if(this.tipoJuego.equals("Single")){
+            jugador1 = new Jugador("Popo");
+            gameLives1 = 3;
+        }
+        if(this.tipoJuego.equals("Coop")){
+            jugador1 = new Jugador("Popo");
+            jugador2 = new Jugador("Nana");
+            gameLives1 = 3;
+            gameLives2 = 3;
+        }
+        foca = new Foca(4, "ID");
         ave = new Ave(3);
         ave2 = new Ave(2);
 
@@ -86,7 +96,7 @@ public class Board extends JPanel{
         int k = 0;
         for(int i = 0; i < 2; i++){
             for(int j = 0; j < 39; j++){
-                bloques4p[k] = new Bloque(j * 20 + 10, i * 20 + 25);
+                bloques4p[k] = new Bloque(j * 20 + 10, i * 20 + 30);
                 k++;
             }
         }
@@ -95,7 +105,7 @@ public class Board extends JPanel{
         int l = 0;
         for(int i = 0; i < 2; i++){
             for(int j = 0; j < 39; j++){
-                bloques3p[l] = new Bloque(j * 20 + 10, i * 20 + 315);
+                bloques3p[l] = new Bloque(j * 20 + 10, i * 20 + 175);
                 l++;
             }
         }
@@ -104,7 +114,7 @@ public class Board extends JPanel{
         int m = 0;
         for(int i = 0; i < 2; i++){
             for(int j = 0; j < 39; j++){
-                bloques2p[m] = new Bloque(j * 20 + 10, i * 20 + 560);
+                bloques2p[m] = new Bloque(j * 20 + 10, i * 20 + 320);
                 m++;
             }
         }
@@ -113,8 +123,17 @@ public class Board extends JPanel{
         int n = 0;
         for(int i = 0; i < 2; i++){
             for(int j = 0; j < 39; j++){
-                bloques1p[n] = new Bloque(j * 20 + 10, i * 20 + 400);
+                bloques1p[n] = new Bloque(j * 20 + 10, i * 20 + 465);
                 n++;
+            }
+        }
+
+        //Piso 5
+        int o = 0;
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 39; j++){
+                bloques5p[o] = new Bloque(j * 20 + 10, i * 20 + 610);
+                o++;
             }
         }
 
@@ -177,8 +196,22 @@ public class Board extends JPanel{
             }
         }
 
-        g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
-        g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
+        for(int i = 0; i < Constantes.NUMBER_OF_BLOCKS5; i++){
+            if(!bloques5p[i].isDestroyed()){
+                g2d.drawImage(bloques5p[i].getImage(), bloques5p[i].getX(), bloques5p[i].getY(), bloques5p[i].getImageWidth(), bloques5p[i].getImageHeight(),
+                        this);
+            }
+        }
+
+        if(this.tipoJuego.equals("Single")){
+            g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
+        }
+        if(this.tipoJuego.equals("Coop")){
+            g2d.drawImage(jugador1.getImage(),jugador1.getX(),jugador1.getY(),jugador1.getImageWidth(),jugador1.getImageHeight(),this);
+            g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
+        }
+
+
         g2d.drawImage(foca.getImage(),foca.getX(),foca.getY(),foca.getImageWidth(),foca.getImageHeight(),this);
         g2d.drawImage(ave.getImage(),ave.getX(),ave.getY(),ave.getImageWidth(),ave.getImageHeight(),this);
         g2d.drawImage(ave2.getImage(),ave2.getX(),ave2.getY(),ave2.getImageWidth(),ave2.getImageHeight(),this);
@@ -219,15 +252,21 @@ public class Board extends JPanel{
     /**
      * Clase para chequear las teclas (cuando son presionadas o dejan de estarlo).
      */
-    private class TAdapter extends KeyAdapter{
+    private class TAdapter extends KeyAdapter {
         /**
          * Metodo para chequear si un tecla dejar de estar presionada.
          * @param e
          */
         @Override
         public void keyReleased(KeyEvent e){
-            jugador1.keyReleased(e);
-            jugador2.keyReleased(e);
+            if(jugador2 == null){
+                jugador1.keyReleased(e);
+            }else{
+                jugador1.keyReleased(e);
+                jugador2.keyReleased(e);
+            }
+            //jugador1.keyReleased(e);
+            //jugador2.keyReleased(e);
         }
 
         /**
@@ -236,8 +275,15 @@ public class Board extends JPanel{
          */
         @Override
         public void keyPressed(KeyEvent e){
-            jugador1.keyPressed(e);
-            jugador2.keyPressed(e);
+
+            if(jugador2 == null){
+                jugador1.keyPressed(e);
+            }else{
+                jugador1.keyPressed(e);
+                jugador2.keyPressed(e);
+            }
+            //jugador1.keyPressed(e);
+            //jugador2.keyPressed(e);
         }
     }
 
@@ -260,8 +306,14 @@ public class Board extends JPanel{
      */
     private void doGameCycle(){
 
-        jugador1.movement();
-        jugador2.movement();
+        if(this.tipoJuego.equals("Single")){
+            jugador1.movement();
+        }
+
+        if(this.tipoJuego.equals("Coop")){
+            jugador1.movement();
+            jugador2.movement();
+        }
         foca.movement();
         ave.movement();
         ave2.movement();
