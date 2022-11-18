@@ -312,17 +312,20 @@ public class Board extends JPanel{
 
         if(this.tipoJuego.equals("Single")){
             jugador1.movement();
+            this.updateInfo.setSingle(jugador1, this);
         }
 
         if(this.tipoJuego.equals("Coop")){
             jugador1.movement();
             jugador2.movement();
+            this.updateInfo.setCoop(jugador1, jugador2, this);
         }
+
         foca.movement();
         ave.movement();
         ave2.movement();
 
-        this.updateInfo.setSingle(jugador1, this);
+
 
         this.client.writeSocket(new Gson().toJson(this.updateInfo));
 
