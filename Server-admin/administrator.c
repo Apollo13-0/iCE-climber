@@ -38,6 +38,7 @@ int running = 1;
 
 
 void *check_incoming_clients(){
+	printf("Entered thread for incoming clients...");
 	while(running==TRUE)
 	{
 		//clear the socket set
@@ -205,6 +206,8 @@ int main(int argc , char *argv[])
 
 	pthread_t check_clients;
 	pthread_create(&check_clients, NULL, check_incoming_clients, NULL);
+	pthread_join(check_clients, NULL);
+
 	
 	
 	return 0;
