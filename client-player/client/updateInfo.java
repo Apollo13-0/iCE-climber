@@ -1,3 +1,6 @@
+package client;
+
+import game_interface.Board;
 import game_interface.Jugador;
 import game_interface.Sprite;
 
@@ -68,9 +71,11 @@ public class updateInfo {
      */
     private boolean bonusPhase;
 
+    private int level;
+
     public updateInfo(){ }
 
-    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, Sprite[] spritesList, boolean bonusPhase) {
+    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, Sprite[] spritesList, boolean bonusPhase, int level) {
         this.ID = ID;
         this.player1X = player1X;
         this.player1Y = player1Y;
@@ -82,6 +87,32 @@ public class updateInfo {
         this.scorePlayer2 = scorePlayer2;
         this.spritesList = spritesList;
         this.bonusPhase = bonusPhase;
+        this.level = level;
+    }
+
+
+    public void setSingle(Jugador jugador, Board board){
+        this.setPlayer1X(jugador.getX());
+        this.setPlayer1Y(jugador.getY());
+        this.setLifePlayer1(jugador.getVidas());
+        this.setScorePlayer1(board.getScoreJ1());
+        this.setBonusPhase(board.getBonusPhase());
+        this.setLevel(board.getLevel());
+    }
+
+    public void setCoop(Jugador jugador1, Jugador jugador2, Board board){
+        this.setPlayer1X(jugador1.getX());
+        this.setPlayer1Y(jugador1.getY());
+        this.setLifePlayer1(jugador1.getVidas());
+        this.setScorePlayer1(board.getScoreJ1());
+
+        this.setPlayer2X(jugador2.getX());
+        this.setPlayer2Y(jugador2.getY());
+        this.setLifePlayer2(jugador2.getVidas());
+        this.setScorePlayer2(board.getScoreJ2());
+
+        this.setBonusPhase(board.getBonusPhase());
+        this.setLevel(board.getLevel());
     }
 
     /**
@@ -262,5 +293,13 @@ public class updateInfo {
      */
     public int getLifePlayer1() {
         return lifePlayer1;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

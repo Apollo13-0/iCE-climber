@@ -12,15 +12,6 @@ public class Jugador extends Sprite {
      */
     private int ID;
 
-    /**
-     *  Coord in x
-     */
-    private int xCoord;
-
-    /**
-     *  Coord in y
-     */
-    private int yCoord;
 
     private int dx;
     private int dy;
@@ -145,15 +136,6 @@ public class Jugador extends Sprite {
     }
 
     /**
-     * Gets Coord in y.
-     *
-     * @return Value of Coord in y.
-     */
-    public int getYCoord() {
-        return yCoord;
-    }
-
-    /**
      * Sets new tipoJugador.
      *
      * @param tipoJugador New value of tipoJugador.
@@ -162,14 +144,6 @@ public class Jugador extends Sprite {
         this.tipoJugador = tipoJugador;
     }
 
-    /**
-     * Sets new Coord in y.
-     *
-     * @param yCoord New value of Coord in y.
-     */
-    public void setYCoord(int yCoord) {
-        this.yCoord = yCoord;
-    }
 
     /**
      * Gets tipoJugador.
@@ -178,24 +152,6 @@ public class Jugador extends Sprite {
      */
     public String getTipoJugador() {
         return tipoJugador;
-    }
-
-    /**
-     * Gets Coord in x.
-     *
-     * @return Value of Coord in x.
-     */
-    public int getXCoord() {
-        return xCoord;
-    }
-
-    /**
-     * Sets new Coord in x.
-     *
-     * @param xCoord New value of Coord in x.
-     */
-    public void setXCoord(int xCoord) {
-        this.xCoord = xCoord;
     }
 
     /**

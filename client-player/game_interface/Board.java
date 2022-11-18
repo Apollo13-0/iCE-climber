@@ -1,7 +1,8 @@
 package game_interface;
 
-import game_interface.Jugador;
-import game_interface.Foca;
+import client.updateInfo;
+import client.clientLogic;
+import com.google.gson.Gson;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -29,6 +30,9 @@ public class Board extends JPanel{
     private int gameLives1;
     private int gameLives2;
     private boolean inGame = true;
+    private updateInfo updateInfo;
+    private clientLogic client;
+    private boolean bonusPhase;
 
     //enemies
     private Foca foca;
@@ -42,7 +46,6 @@ public class Board extends JPanel{
 
     public static void updateGameDetails(){
 
-
     }
 
     /**
@@ -54,7 +57,8 @@ public class Board extends JPanel{
         setFocusable(true);
         setPreferredSize(new Dimension(Constantes.WIDTH, Constantes.HEIGHT));
         setBackground(Color.BLACK);
-
+        this.updateInfo = new updateInfo();
+        this.client = new clientLogic(6666, "127.0.0.1");
         gameInit();
     }
 
@@ -189,6 +193,11 @@ public class Board extends JPanel{
         foca.movement();
         ave.movement();
         ave2.movement();
+
+        this.updateInfo.setSingle(jugador1, this);
+
+        this.client.writeSocket(new Gson().toJson(this.updateInfo));
+
         //System.out.println("HOLA IGNACIO"); //Agregue aquí la actualizacion de la informacion del servidor.
 
         repaint();
@@ -207,4 +216,66 @@ public class Board extends JPanel{
 
     }
 
+
+    public boolean getBonusPhase() {
+        return bonusPhase;
+    }
+
+    public void setBonusPhase(boolean bonusPhase) {
+        this.bonusPhase = bonusPhase;
+    }
+
+    /**
+     * Gets level.
+     *
+     * @return Value of level.
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Sets new scoreJ2.
+     *
+     * @param scoreJ2 New value of scoreJ2.
+     */
+    public void setScoreJ2(int scoreJ2) {
+        this.scoreJ2 = scoreJ2;
+    }
+
+    /**
+     * Sets new level.
+     *
+     * @param level New value of level.
+     */
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    /**
+     * Gets scoreJ2.
+     *
+     * @return Value of scoreJ2.
+     */
+    public int getScoreJ2() {
+        return scoreJ2;
+    }
+
+    /**
+     * Sets new scoreJ1.
+     *
+     * @param scoreJ1 New value of scoreJ1.
+     */
+    public void setScoreJ1(int scoreJ1) {
+        this.scoreJ1 = scoreJ1;
+    }
+
+    /**
+     * Gets scoreJ1.
+     *
+     * @return Value of scoreJ1.
+     */
+    public int getScoreJ1() {
+        return scoreJ1;
+    }
 }
