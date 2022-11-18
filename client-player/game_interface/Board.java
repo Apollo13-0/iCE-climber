@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.IllegalFormatCodePointException;
 import java.util.Objects;
 
 public class Board extends JPanel{
@@ -28,13 +29,18 @@ public class Board extends JPanel{
     private Jugador jugador2; //Nana
     private int scoreJ1 = 0; //Puntos Popo
     private int scoreJ2 = 0; //Puntos Nana
-    private int level = 1;
+    private int level;
     private int gameLives1;
     private int gameLives2;
     private boolean inGame = true;
     private updateInfo updateInfo;
     private clientLogic client;
     private boolean bonusPhase;
+    private int pisoA;
+    private int pisoB;
+    private int pisoC;
+    private int pisoD;
+    private String bonusLabel;
 
     //enemies
     private Foca foca;
@@ -61,14 +67,19 @@ public class Board extends JPanel{
      * Inicializador de la clase game_interface.Board
      */
     private void initBoard(String tipoJuego){
-
+        this.pisoA = 1;
+        this.pisoB = 2;
+        this.pisoC = 3;
+        this.pisoD = 4;
+        this.bonusLabel = "";
         this.tipoJuego = tipoJuego;
+        this.level = 1;
         addKeyListener(new TAdapter());
         setFocusable(true);
         setPreferredSize(new Dimension(Constantes.WIDTH, Constantes.HEIGHT));
         setBackground(Color.BLACK);
         this.updateInfo = new updateInfo();
-        this.client = new clientLogic(6666, "127.0.0.1");
+        //this.client = new clientLogic(6666, "127.0.0.1");
         gameInit();
     }
 
@@ -246,11 +257,26 @@ public class Board extends JPanel{
 
         g2d.setColor(Color.WHITE);
         g2d.setFont(font);
-        g2d.drawString("Score: " + String.valueOf(scoreJ1), (Constantes.WIDTH - fontMetrics.stringWidth(String.valueOf(scoreJ1)))/2, 20);
-        g2d.drawString("Score: " + String.valueOf(scoreJ2), (Constantes.WIDTH - fontMetrics.stringWidth(String.valueOf(scoreJ2)))/2, 20);
-        g2d.drawString("Lives: " + String.valueOf(gameLives1), (Constantes.WIDTH - fontMetrics.stringWidth(String.valueOf(gameLives1))/3), 20);
-        g2d.drawString("Lives: " + String.valueOf(gameLives2), (Constantes.WIDTH - fontMetrics.stringWidth(String.valueOf(gameLives2))/3), 20);
-        g2d.drawString("Level: " + String.valueOf(level), (Constantes.WIDTH - fontMetrics.stringWidth(String.valueOf(level)))/5, 20);
+        g2d.drawString("Score 1: " + String.valueOf(scoreJ1), 40, 20);
+        g2d.drawString("Score 2: " + String.valueOf(scoreJ2), 165, 20);
+        g2d.drawString("Lives 1: " + String.valueOf(gameLives1), 290, 20);
+        g2d.drawString("Lives 2: " + String.valueOf(gameLives2), 415, 20);
+        g2d.drawString("Level: " + String.valueOf(level), 540, 20);
+
+        g2d.drawString(String.valueOf(pisoD), 40, 100);
+        g2d.drawString(String.valueOf(pisoC), 40, 235);
+        g2d.drawString(String.valueOf(pisoB), 40, 380);
+        g2d.drawString(String.valueOf(pisoA), 40, 525);
+
+
+        g2d.drawString(String.valueOf(pisoD), 750, 100);
+        g2d.drawString(String.valueOf(pisoC), 750, 235);
+        g2d.drawString(String.valueOf(pisoB), 750, 380);
+        g2d.drawString(String.valueOf(pisoA), 750, 525);
+
+        g2d.drawString(bonusLabel, 350, 100);
+
+
     }
 
     /**
@@ -312,12 +338,41 @@ public class Board extends JPanel{
 
         if(this.tipoJuego.equals("Single")){
             jugador1.movement();
+
+            if (jugador1.getY() == -77){
+                this.level+=1;
+                setFloorLabel(1);
+            }
+
             this.updateInfo.setSingle(jugador1, this);
         }
 
         if(this.tipoJuego.equals("Coop")){
             jugador1.movement();
             jugador2.movement();
+
+            // Solo pasa el jugador 1 al siguiente nivel
+            if (jugador1.getY() == -77){
+                this.level+=1;
+                this.gameLives2-=1;
+                jugador2.setY(550);
+                setFloorLabel(1);
+            }
+
+            // Solo pasa el jugador 2 al siguiente nivel
+            if (jugador2.getY() == -77){
+                this.level+=1;
+                this.gameLives1-=1;
+                jugador1.setY(550);
+                setFloorLabel(2);
+            }
+
+            // ambos pasan al siguiente nivel
+            if (jugador1.getY() == -77 && jugador2.getY() == -77){
+                this.level+=1;
+                setFloorLabel(3);
+            }
+
             this.updateInfo.setCoop(jugador1, jugador2, this);
         }
 
@@ -325,13 +380,31 @@ public class Board extends JPanel{
         ave.movement();
         ave2.movement();
 
-
-
-        this.client.writeSocket(new Gson().toJson(this.updateInfo));
-
-        //System.out.println("HOLA IGNACIO"); //Agregue aquí la actualizacion de la informacion del servidor.
+        //this.client.writeSocket(new Gson().toJson(this.updateInfo));
 
         repaint();
+    }
+
+    private void setFloorLabel(int n){
+        if (this.level == 3){
+            this.bonusLabel = "Fase bonus";
+            if (n == 1){
+                gameLives1+=1;
+            } else if(n ==2){
+                gameLives2+=1;
+            } else if (n == 3){
+                gameLives1+=1;
+                gameLives2+=1;
+            }
+
+            // aqui debe de recorrer la lista de enemigos y cambiar la velocidad a cada uno
+
+        } else {
+            this.pisoA+=4;
+            this.pisoB+=4;
+            this.pisoC+=4;
+            this.pisoD+=4;
+        }
     }
 
     private void stopGame(){
