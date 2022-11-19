@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import client.clientLogic;
 import client.serverInfo;
+import client.updateInfo;
 import game_interface.IceClimber;
 import com.google.gson.Gson;
 
@@ -18,6 +19,7 @@ public class LaunchPage implements ActionListener {
     JButton myButton2 = new JButton("Jugador 2");
     JButton myButton3 = new JButton("Espectador");
     client.serverInfo serverInfo = new serverInfo();
+    client.updateInfo updateInfo;
 
     public LaunchPage(){
 
@@ -55,6 +57,7 @@ public class LaunchPage implements ActionListener {
             serverInfo = gson.fromJson(client.readSockect(), serverInfo.class);
 
              if (serverInfo.getFeedback() == 1 || serverInfo.getFeedback() == 2 ){
+                 client.setID(serverInfo.getFeedback());
                  var game = new IceClimber("Single", client);
                  game.setVisible(true);
              } else{
@@ -71,6 +74,7 @@ public class LaunchPage implements ActionListener {
             serverInfo = gson.fromJson(client.readSockect(), serverInfo.class);
 
             if (serverInfo.getFeedback() == 1 || serverInfo.getFeedback() == 2 ){
+                client.setID(serverInfo.getFeedback());
                 var game = new IceClimber("Coop", client);
                 game.setVisible(true);
             } else{

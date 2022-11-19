@@ -1,5 +1,6 @@
 package game_interface;
 
+import client.serverInfo;
 import com.google.gson.Gson;
 import game_interface.Jugador;
 import game_interface.Foca;
@@ -7,9 +8,6 @@ import game_interface.Foca;
 
 import client.updateInfo;
 import client.clientLogic;
-
-
-
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Color;
@@ -126,7 +124,9 @@ public class Board extends JPanel{
      */
     private String bonusLabel;
 
-    //enemigos
+    private serverInfo serverInfo;
+
+
     private Foca foca;
     private Ave ave; //Hace falta meterlo en una lista.
     private Ave ave2;
@@ -506,12 +506,43 @@ public class Board extends JPanel{
             this.enemigos.get(i).movement();
         }
 
-//        foca.movement();
-//        ave.movement();
-//        ave2.movement();
 
         this.client.writeSocket(new Gson().toJson(this.updateInfo));
 
+        String infoServer = client.readSockect();
+
+        if (!infoServer.equals("ok")){
+            Gson readSon = new Gson();
+            serverInfo = readSon.fromJson(client.readSockect(), serverInfo.class);
+
+            // Creacion de enemigos
+            if (serverInfo.getNombre().equals("foca")){
+                Foca newFoca = new Foca(serverInfo.getPiso(), serverInfo.getDireccion());
+                this.enemigos.add(newFoca);
+            }
+            if (serverInfo.getNombre().equals("ave")){
+                Ave newAve = new Ave(serverInfo.getPiso());
+                this.enemigos.add(newAve);
+            }
+            if (serverInfo.getNombre().equals("hielo")){
+                Hielo newHielo = new Hielo(serverInfo.getPiso());
+                this.enemigos.add(newHielo);
+            }
+
+            // Creacion de verduras
+            if (serverInfo.getNombre().equals("banano")){
+                Foca newFoca = new Foca(serverInfo.getPiso(), serverInfo.getDireccion());
+                this.enemigos.add(newFoca);
+            }
+            if (serverInfo.getNombre().equals("berenjena")){
+                Ave newAve = new Ave(serverInfo.getPiso());
+                this.enemigos.add(newAve);
+            }
+            if (serverInfo.getNombre().equals("naranja")){
+                Hielo newHielo = new Hielo(serverInfo.getPiso());
+                this.enemigos.add(newHielo);
+            }
+        }
         repaint();
     }
 
@@ -569,7 +600,7 @@ public class Board extends JPanel{
             if(jugador.getRectangle().intersects(enemigos.get(k).getRectangle()) && jugador.isAttacking()){
                 System.out.println("colision");
                 if(enemigos.get(k).getName() == "ave"){
-                    if(jugador.getName().equals("Popo")){
+                    if(jugador.getTipoJugador().equals("Popo")){
                         this.scoreJ1 += Constantes.AVE_POINTS;
                     }else{
                         this.scoreJ2 += Constantes.AVE_POINTS;
@@ -578,7 +609,7 @@ public class Board extends JPanel{
                     System.out.println("golpe");
                 }
                 if(enemigos.get(k).getName() == "foca"){
-                    if(jugador.getName().equals("Popo")){
+                    if(jugador.getTipoJugador().equals("Popo")){
                         this.scoreJ1 += Constantes.FOCA_POINTS;
                     }else{
                         this.scoreJ2 += Constantes.FOCA_POINTS;
