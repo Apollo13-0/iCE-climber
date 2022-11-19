@@ -120,17 +120,26 @@ public class Board extends JPanel{
     private Ave ave2;
     private Ave[] aves;
 
-    //bloques
+    /**
+     * Blocks obj for each floor
+     */
     private Bloque[] bloques5p;
     private Bloque[] bloques4p;
     private Bloque[] bloques3p;
     private Bloque[] bloques2p;
     private Bloque[] bloques1p;
 
+    /**
+     * Constructor of Board class
+     * @param tipoJuego String
+     */
     public Board(String tipoJuego){
         initBoard(tipoJuego);
     }
 
+    /**
+     * Handles the creation of enemies, reads the server
+     */
     public static void updateGameDetails(){
 
     }
@@ -160,11 +169,13 @@ public class Board extends JPanel{
      */
 
     private void gameInit(){
+
         bloques4p = new Bloque[Constantes.NUMBER_OF_BLOCKS];
         bloques3p = new Bloque[Constantes.NUMBER_OF_BLOCKS2];
         bloques2p = new Bloque[Constantes.NUMBER_OF_BLOCKS3];
         bloques1p = new Bloque[Constantes.NUMBER_OF_BLOCKS4];
         bloques5p = new Bloque[Constantes.NUMBER_OF_BLOCKS5];
+
         if(this.tipoJuego.equals("Single")){
             jugador1 = new Jugador("Popo");
             gameLives1 = 3;
@@ -175,9 +186,13 @@ public class Board extends JPanel{
             gameLives1 = 3;
             gameLives2 = 3;
         }
+
+        ///---------------------------PRUEBAS---------------------------------
         foca = new Foca(4, "ID");
         ave = new Ave(3);
         ave2 = new Ave(2);
+        ///-------------------------------------------------------------------
+
 
         //Piso 4
         int k = 0;
@@ -483,6 +498,9 @@ public class Board extends JPanel{
         }
     }
 
+    /**
+     * Stops the game
+     */
     private void stopGame(){
         inGame = false;
         timer.stop();
@@ -496,11 +514,18 @@ public class Board extends JPanel{
 
     }
 
-
+    /**
+     * Checks the bonus phase
+     * @return boolean
+     */
     public boolean getBonusPhase() {
         return bonusPhase;
     }
 
+    /**
+     * sets bonus phase
+     * @param bonusPhase boolean 
+     */
     public void setBonusPhase(boolean bonusPhase) {
         this.bonusPhase = bonusPhase;
     }
