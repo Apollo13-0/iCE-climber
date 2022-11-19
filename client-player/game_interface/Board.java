@@ -130,6 +130,8 @@ public class Board extends JPanel{
     private Ave ave; //Hace falta meterlo en una lista.
     private Ave ave2;
     private Ave[] aves;
+    private Hielo hielo;
+    private Pterodactilo pterodactilo;
 
 
     //Lista de enemigos
