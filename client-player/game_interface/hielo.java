@@ -3,14 +3,13 @@ package game_interface;
 import javax.swing.*;
 import java.util.Random;
 
-public class hielo extends Sprite {
-
+public class Hielo extends Sprite{
     private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
     private int points;
     private int xRandom;
 
-    public hielo(int floor){
+    public Hielo(int floor){
         initHielo(floor);
     }
 
@@ -32,7 +31,7 @@ public class hielo extends Sprite {
         image = ii.getImage();
     }
 
-    @Override
+
     public void movement(){
         if(y <= 0 || y >= Constantes.HEIGHT - imageHeight){
             speed = speed * -1;
@@ -65,5 +64,4 @@ public class hielo extends Sprite {
         }
 
     }
-
 }
