@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Bloque extends Sprite{
 
-    private boolean destroyed;
+    //private boolean destroyed;
 
     public Bloque(int x, int y){
         initBloque(x, y);
@@ -14,7 +14,7 @@ public class Bloque extends Sprite{
     private void initBloque(int x, int y){
         this.x = x;
         this.y = y;
-        destroyed = false;
+        this.isDestroyed = false;
         loadImage();
         getImageDimensions();
     }
@@ -24,13 +24,13 @@ public class Bloque extends Sprite{
         image = ii.getImage();
     }
 
-    boolean isDestroyed(){
-        return destroyed;
-    }
+    //boolean isDestroyed(){
+        //return destroyed;
+    //}
 
-    void setDestroyed(boolean val){
-        destroyed = val;
-    }
+    //void setDestroyed(boolean val){
+       // destroyed = val;
+    //}
 
     //public String getBrickCoordinates(){
         //System.out.println();

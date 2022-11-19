@@ -20,6 +20,16 @@ public class Sprite {
     int imageWidth;
     Image image;
 
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    public void setDestroyed(boolean destroyed) {
+        isDestroyed = destroyed;
+    }
+
+    boolean isDestroyed;
+
     /**
      *  Name of the enemy
      */

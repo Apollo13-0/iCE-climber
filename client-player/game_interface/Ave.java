@@ -13,7 +13,7 @@ public class Ave extends Sprite {
     private int dy;
     private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
-    private boolean hit;
+    //private boolean hit;
     private int floor;
     private int points;
     private boolean booleandir;
@@ -29,13 +29,14 @@ public class Ave extends Sprite {
         //this.x = x;
         //this.y = y;
         //this.floor = floor;
+        this.isDestroyed = false;
         this.points = Constantes.AVE_POINTS;
         Random booleandir = new Random();
         this.booleandir = booleandir.nextBoolean();
         Random num = new Random();
         this.n1 = num.nextInt(400);
         this.n2 = num.nextInt(150);
-        hit = false;
+        //hit = false;
         this.setName("ave");
         this.setDir();
         this.setFloorC(floor);

@@ -1,5 +1,5 @@
 package game_interface;
-
+import com.google.gson.Gson;
 import game_interface.Jugador;
 import game_interface.Foca;
 

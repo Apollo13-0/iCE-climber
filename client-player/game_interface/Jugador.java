@@ -47,6 +47,7 @@ public class Jugador extends Sprite {
         y = floorHeight;
         speed = 3;
         weight = 1;
+        this.isDestroyed = false;
         loadImage();
         getImageDimensions();
         resetState();
