@@ -27,25 +27,100 @@ import java.awt.event.KeyEvent;
 import java.util.IllegalFormatCodePointException;
 import java.util.Objects;
 
+/**
+ *
+ */
 public class Board extends JPanel{
     private Timer timer;
+
+    /**
+     * indicates the state of the game
+     */
     private String message = "Game Over";
+
+    /**
+     * Indicates the type of game
+     */
     public String tipoJuego;
-    private Jugador jugador1; //Popo
-    private Jugador jugador2; //Nana
-    private int scoreJ1 = 0; //Puntos Popo
-    private int scoreJ2 = 0; //Puntos Nana
+
+    /**
+     * Sprite of popo
+     */
+    private Jugador jugador1;
+
+    /**
+     * Sprite of nana
+     */
+    private Jugador jugador2;
+
+    /**
+     * Score points of popo
+     */
+    private int scoreJ1 = 0;
+
+    /**
+     * Score points of nana
+     */
+    private int scoreJ2 = 0;
+
+    /**
+     * Indicates current level
+     */
     private int level;
+
+    /**
+     * Stores the number of popo's lives
+     */
     private int gameLives1;
+
+    /**
+     * Stores the number of nana's lives
+     */
     private int gameLives2;
+
+    /**
+     *
+     */
     private boolean inGame = true;
+
+    /**
+     * Class that handles the info for the server
+     */
     private updateInfo updateInfo;
+
+    /**
+     *  Client
+     */
     private clientLogic client;
+
+    /**
+     * Boolean indicates if is in bonus phase
+     */
     private boolean bonusPhase;
+
+    /**
+     * inf for floor label
+     */
     private int pisoA;
+
+    /**
+     * inf for floor label
+     */
     private int pisoB;
+
+    /**
+     * inf for floor label
+     */
     private int pisoC;
+
+    /**
+     * inf for floor label
+     */
     private int pisoD;
+
+    /**
+     * String for bonus label
+     */
     private String bonusLabel;
 
     //enemies
@@ -54,17 +129,26 @@ public class Board extends JPanel{
     private Ave ave2;
     private Ave[] aves;
 
-    //bloques
+    /**
+     * Blocks obj for each floor
+     */
     private Bloque[] bloques5p;
     private Bloque[] bloques4p;
     private Bloque[] bloques3p;
     private Bloque[] bloques2p;
     private Bloque[] bloques1p;
 
+    /**
+     * Constructor of Board class
+     * @param tipoJuego String
+     */
     public Board(String tipoJuego){
         initBoard(tipoJuego);
     }
 
+    /**
+     * Handles the creation of enemies, reads the server
+     */
     public static void updateGameDetails(){
 
     }
@@ -94,11 +178,13 @@ public class Board extends JPanel{
      */
 
     private void gameInit(){
+
         bloques4p = new Bloque[Constantes.NUMBER_OF_BLOCKS];
         bloques3p = new Bloque[Constantes.NUMBER_OF_BLOCKS2];
         bloques2p = new Bloque[Constantes.NUMBER_OF_BLOCKS3];
         bloques1p = new Bloque[Constantes.NUMBER_OF_BLOCKS4];
         bloques5p = new Bloque[Constantes.NUMBER_OF_BLOCKS5];
+
         if(this.tipoJuego.equals("Single")){
             jugador1 = new Jugador("Popo");
             gameLives1 = 3;
@@ -109,9 +195,13 @@ public class Board extends JPanel{
             gameLives1 = 3;
             gameLives2 = 3;
         }
+
+        ///---------------------------PRUEBAS---------------------------------
         foca = new Foca(4, "ID");
         ave = new Ave(3);
         ave2 = new Ave(2);
+        ///-------------------------------------------------------------------
+
 
         //Piso 4
         int k = 0;
@@ -318,8 +408,6 @@ public class Board extends JPanel{
                 jugador1.keyPressed(e);
                 jugador2.keyPressed(e);
             }
-            //jugador1.keyPressed(e);
-            //jugador2.keyPressed(e);
         }
     }
 
@@ -342,9 +430,11 @@ public class Board extends JPanel{
      */
     private void doGameCycle(){
 
+        // Partida de un jugador
         if(this.tipoJuego.equals("Single")){
             jugador1.movement();
 
+            // LLega el nivel superior
             if (jugador1.getY() == -77){
                 this.level+=1;
                 setFloorLabel(1);
@@ -353,6 +443,7 @@ public class Board extends JPanel{
             this.updateInfo.setSingle(jugador1, this);
         }
 
+        // Partida cooperativa
         if(this.tipoJuego.equals("Coop")){
             jugador1.movement();
             jugador2.movement();
@@ -391,6 +482,10 @@ public class Board extends JPanel{
         repaint();
     }
 
+    /**
+     * Sets the number of the floor
+     * @param n int type of game
+     */
     private void setFloorLabel(int n){
         if (this.level == 3){
             this.bonusLabel = "Fase bonus";
@@ -413,6 +508,9 @@ public class Board extends JPanel{
         }
     }
 
+    /**
+     * Stops the game
+     */
     private void stopGame(){
         inGame = false;
         timer.stop();
@@ -426,11 +524,18 @@ public class Board extends JPanel{
 
     }
 
-
+    /**
+     * Checks the bonus phase
+     * @return boolean
+     */
     public boolean getBonusPhase() {
         return bonusPhase;
     }
 
+    /**
+     * sets bonus phase
+     * @param bonusPhase boolean
+     */
     public void setBonusPhase(boolean bonusPhase) {
         this.bonusPhase = bonusPhase;
     }

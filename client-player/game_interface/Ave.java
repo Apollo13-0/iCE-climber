@@ -20,6 +20,12 @@ public class Ave extends Sprite {
     private int n1;
     private int n2;
 
+    /**
+     * Indicates the direction of the ave
+     */
+    private String dir;
+
+
     public Ave(int floor){
         initAve(floor);
     }
@@ -74,15 +80,9 @@ public class Ave extends Sprite {
     }
 
     /**
-     * Indicates the direction of the ave
-     */
-    private String dir;
-
-    /**
      *  Sets the floor and Y coords of the ave
      * @param floor int range 1 - 15
      */
-
     public void setFloorC(int floor) {
         this.setFloor(floor);
 
