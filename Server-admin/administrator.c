@@ -13,6 +13,11 @@
 #include "constants.h"
 #include <pthread.h>
 #include <json-c/json.h>
+
+/**
+ * @brief containts the data of each game client
+ * 
+ */
 struct game {
 	int game_num;
 	int sock_descriptor;
@@ -20,14 +25,60 @@ struct game {
 	int viewer_num;
 };
 
+/**
+ * @brief sends data received by games to its viewers
+ * 
+ * @param data 
+ * @param sd 
+ */
+void send_data_to_viewers(char *data, int sd){
+	int s_n;
+	for (s_n = 0; s_n<game_num;s_n++){
+		if(games[s_n].sock_descriptor == sd){
+			break;
+		}
+	}
+	int i;
+	for(i = 0; i<games[s_n].viewer_num;i++){
+		send(games[s_n].viewers[i], data, strlen(data), 0);
+	}
+}
+
+/**
+ * @brief creates a json string to respond to a request to join as a game or viewer
+ * 
+ * @param answer 
+ * @return const char* 
+ */
 const char *response_to_request(int answer){
 	struct json_object *response_to_request = json_object_new_object();
 	json_object_object_add(response_to_request, "tipo", json_object_new_string("Respuesta solicitud"));
-	json_object_object_add(response_to_request, "error", json_object_new_int(answer));
-	char *err_string = json_object_to_json_string(response_to_request);
-	return err_string;
+	json_object_object_add(response_to_request, "feedback", json_object_new_int(answer));
+	char *feedback_string = json_object_to_json_string(response_to_request);
+	return feedback_string;
 }
-///globals
+
+const char *enemy_msg_string(char *cl_instruction){
+	//ejemplo de mensaje: 1-2-foca-DI
+
+	char *cl_instruction_tken = strtok(cl_instruction, "-\n");
+	struct json_object *enemy_json = json_object_new_object();
+	strtok(cl_instruction_tken, NULL);
+	json_object_object_add(enemy_json, "tipo", json_object_new_string("enemigo"));
+	json_object_object_add(enemy_json, "piso", json_object_new_int(cl_instruction_tken));
+	strtok(cl_instruction_tken, NULL);
+	json_object_object_add(enemy_json, "nombre", json_object_new_string(cl_instruction_tken));
+	strtok(cl_instruction_tken, NULL);
+	json_object_object_add(enemy_json, "direccion", json_object_new_string(cl_instruction_tken));
+	strtok(cl_instruction_tken, NULL);
+	char *enemy_json_string = json_object_to_json_string(enemy_json);
+	return enemy_json_string;
+}
+
+/**
+ * @brief global variables
+ * 
+ */
 int opt = TRUE;
 int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
 int max_sd;
@@ -43,6 +94,25 @@ fd_set readfds;
 char *message = "ECHO Daemon v1.0 \r\n";
 int running = 1;
 
+void *check_cli(){
+	char inpt[256];
+	while(running == TRUE){
+		gets(inpt);
+		if (inpt == "exit"){
+			running = 0;
+		}
+		else
+		{
+
+			if(atoi(input[0]) <= MAX_GAMES){
+				char *item = enemy_msg_string(inpt[2]);
+				send(games[atoi[input[0]]-1], item, strlen(item), 0)
+			}
+			
+		}
+	}	
+
+}
 
 void *check_incoming_clients(){
 	printf("Entered thread for incoming clients...\n");
@@ -241,11 +311,15 @@ int main(int argc , char *argv[])
 	addrlen = sizeof(address);
 	puts("Waiting for connections ...");
 
-	pthread_t check_clients;
+	/**
+	 * @brief threads to check incoming clients and to check cli instruction
+	 * 
+	 */
+	pthread_t check_clients, check_commands;
 	pthread_create(&check_clients, NULL, check_incoming_clients, NULL);
 	pthread_join(check_clients, NULL);
-
-	
+	pthread_create(&check_commandsm, NULL, check_cli, NULL);
+	pthread_join(check_clients, NULL);
 
 	return 0;
 }
