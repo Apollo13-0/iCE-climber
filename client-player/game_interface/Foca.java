@@ -11,7 +11,6 @@ public class Foca extends Sprite {
     private int dy;
     private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
-    private int floor;
     private int points;
 
     public Foca(int floor, String dir){
@@ -20,9 +19,7 @@ public class Foca extends Sprite {
     }
 
     private void initFoca(int floor, String dir){
-        //this.x = x;
-        //this.y = y;
-        //this.floor = floor;
+
         this.points = Constantes.YETI_POINTS;
         this.isDestroyed = false;
         this.setName("foca");
@@ -38,14 +35,13 @@ public class Foca extends Sprite {
         image = ii.getImage();
     }
 
+    @Override
     public void movement(){
         if(x <= 0 || x >= Constantes.WIDTH - imageWidth){
             speed = speed * -1;
         }
         x = x + speed;
-        //if(x >= Constantes.WIDTH - imageWidth){
-          //  x = Constantes.WIDTH - imageWidth;
-        //}
+
     }
 
     /**
@@ -54,23 +50,12 @@ public class Foca extends Sprite {
     private void resetState(){
         x = 100;
         y = 100;
-
-
     }
 
     /**
      * Indicates the direction of the foca
      */
     private String dir;
-
-    /**
-     *  builts a foca object in a desired floor
-     */
-    //public Foca(int floor, String dir){
-        //this.setName("foca");
-        //this.setSpritePath("resources\foca.png");
-        //this.setDir(dir);
-   // }
 
     /**
      *  Sets the floor and Y coords of the foca
@@ -81,7 +66,7 @@ public class Foca extends Sprite {
         this.setFloor(floor);
 
         // revisar coordenadas
-        switch (floor){
+        switch (floor) {
             case 1, 5, 9, 13 -> this.setY(549);
             case 2, 6, 10, 14 -> this.setY(404);
             case 3, 7, 11, 15 -> this.setY(259);

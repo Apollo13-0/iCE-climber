@@ -14,7 +14,6 @@ public class Ave extends Sprite {
     private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
     //private boolean hit;
-    private int floor;
     private int points;
     private boolean booleandir;
     private int n1;
@@ -52,6 +51,7 @@ public class Ave extends Sprite {
         image = ii.getImage();
     }
 
+    @Override
     public void movement(){
 
         if(x <= 0 || x >= Constantes.WIDTH - imageWidth){

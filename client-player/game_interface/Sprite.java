@@ -77,6 +77,7 @@ public class Sprite {
         imageHeight = image.getHeight(null);
     }
 
+    public void movement(){};
     /**
      * Gets name.
      *

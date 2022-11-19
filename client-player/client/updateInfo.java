@@ -2,6 +2,9 @@ package client;
 
 import game_interface.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class updateInfo {
 
     /**
@@ -52,7 +55,7 @@ public class updateInfo {
     /**
      *  all the sprites on the game
      */
-    private Sprite[] spritesList;
+    private List<Sprite> spritesList;
 
     /**
      *  all the blocks on the game
@@ -96,7 +99,7 @@ public class updateInfo {
      * @param bonusPhase boolean
      * @param level int
      */
-    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, Sprite[] spritesList,Bloque[] bloqueList,Verduras[] verdurasList, boolean bonusPhase, int level) {
+    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, List<Sprite> spritesList,Bloque[] bloqueList,Verduras[] verdurasList, boolean bonusPhase, int level) {
         this.ID = ID;
         this.player1X = player1X;
         this.player1Y = player1Y;
@@ -342,5 +345,39 @@ public class updateInfo {
      */
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public List<Sprite> getSpritesList() {
+        return spritesList;
+    }
+
+    public void setSpritesList(List<Sprite> spritesList) {
+        this.spritesList = spritesList;
+    }
+
+    public Bloque[] getBloqueList() {
+        return bloqueList;
+    }
+
+    public void setBloqueList(Bloque[] bloqueList) {
+        this.bloqueList = bloqueList;
+    }
+
+    /**
+     * Sets new all the bonus on the game.
+     *
+     * @param verdurasList New value of all the bonus on the game.
+     */
+    public void setVerdurasList(Verduras[] verdurasList) {
+        this.verdurasList = verdurasList;
+    }
+
+    /**
+     * Gets all the bonus on the game.
+     *
+     * @return Value of all the bonus on the game.
+     */
+    public Verduras[] getVerdurasList() {
+        return verdurasList;
     }
 }

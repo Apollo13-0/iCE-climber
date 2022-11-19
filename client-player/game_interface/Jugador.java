@@ -66,6 +66,7 @@ public class Jugador extends Sprite {
         }
     }
 
+    @Override
     public void movement(){
         x += dx;
         //y -= dy;

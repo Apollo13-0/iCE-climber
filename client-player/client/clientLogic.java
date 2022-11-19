@@ -84,8 +84,8 @@ public class clientLogic {
     public void writeSocket(String jacksonStr) {
         try {
             this.clientOutD.writeUTF(jacksonStr); // Envia json
-            String message = this.inputSocketInD.readUTF(); // lee json
-            System.out.println(message); // aqui deberia insertarlo en la clase que va a actualizarla info
+            //String message = this.inputSocketInD.readUTF(); // lee json
+            //System.out.println(message); // aqui deberia insertarlo en la clase que va a actualizarla info
         } catch (IOException e) {
             e.printStackTrace();
         }

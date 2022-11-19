@@ -24,8 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.IllegalFormatCodePointException;
-import java.util.Objects;
+import java.util.*;
 
 /**
  *
@@ -127,7 +126,9 @@ public class Board extends JPanel{
     private Foca foca;
     private Ave ave; //Hace falta meterlo en una lista.
     private Ave ave2;
-    private Ave[] aves;
+    //private Sprite[] enemies; // meter las aves, hielos
+    private List<Sprite> enemies;
+
 
     /**
      * Blocks obj for each floor
@@ -142,8 +143,8 @@ public class Board extends JPanel{
      * Constructor of Board class
      * @param tipoJuego String
      */
-    public Board(String tipoJuego){
-        initBoard(tipoJuego);
+    public Board(String tipoJuego, clientLogic client){
+        initBoard(tipoJuego, client);
     }
 
     /**
@@ -156,7 +157,8 @@ public class Board extends JPanel{
     /**
      * Inicializador de la clase game_interface.Board
      */
-    private void initBoard(String tipoJuego){
+    private void initBoard(String tipoJuego, clientLogic client){
+
         this.pisoA = 1;
         this.pisoB = 2;
         this.pisoC = 3;
@@ -164,12 +166,14 @@ public class Board extends JPanel{
         this.bonusLabel = "";
         this.tipoJuego = tipoJuego;
         this.level = 1;
+        this.enemies = new ArrayList<>();
+
         addKeyListener(new TAdapter());
         setFocusable(true);
         setPreferredSize(new Dimension(Constantes.WIDTH, Constantes.HEIGHT));
         setBackground(Color.BLACK);
         this.updateInfo = new updateInfo();
-        //this.client = new clientLogic(6666, "127.0.0.1");
+        this.client = client;
         gameInit();
     }
 
@@ -200,6 +204,10 @@ public class Board extends JPanel{
         foca = new Foca(4, "ID");
         ave = new Ave(3);
         ave2 = new Ave(2);
+
+        this.enemies.add(foca);
+        this.enemies.add(ave);
+        this.enemies.add(ave2);
         ///-------------------------------------------------------------------
 
 
@@ -322,10 +330,12 @@ public class Board extends JPanel{
             g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
         }
 
+        for (int i = 0; i < this.enemies.size(); i++){
+            if(!this.enemies.get(i).isDestroyed()) {
+                g2d.drawImage(this.enemies.get(i).getImage(), this.enemies.get(i).getX(), this.enemies.get(i).getY(), this.enemies.get(i).getImageWidth(), this.enemies.get(i).getImageHeight(), this);
 
-        g2d.drawImage(foca.getImage(),foca.getX(),foca.getY(),foca.getImageWidth(),foca.getImageHeight(),this);
-        g2d.drawImage(ave.getImage(),ave.getX(),ave.getY(),ave.getImageWidth(),ave.getImageHeight(),this);
-        g2d.drawImage(ave2.getImage(),ave2.getX(),ave2.getY(),ave2.getImageWidth(),ave2.getImageHeight(),this);
+            }
+        }
     }
 
     /**
@@ -391,8 +401,6 @@ public class Board extends JPanel{
                 jugador1.keyReleased(e);
                 jugador2.keyReleased(e);
             }
-            //jugador1.keyReleased(e);
-            //jugador2.keyReleased(e);
         }
 
         /**
@@ -441,6 +449,9 @@ public class Board extends JPanel{
             }
 
             this.updateInfo.setSingle(jugador1, this);
+            //this.updateInfo.setSpritesList(this.enemies);
+            //this.updateInfo.setBloqueList(bloques1p);
+
         }
 
         // Partida cooperativa
@@ -471,16 +482,30 @@ public class Board extends JPanel{
             }
 
             this.updateInfo.setCoop(jugador1, jugador2, this);
+            //this.updateInfo.setSpritesList(this.enemies);
         }
 
-        foca.movement();
-        ave.movement();
-        ave2.movement();
+        for(int i = 0; i < this.enemies.size(); i++){
+            this.enemies.get(i).movement();
+        }
 
-        //this.client.writeSocket(new Gson().toJson(this.updateInfo));
+//        foca.movement();
+//        ave.movement();
+//        ave2.movement();
+
+        this.client.writeSocket(new Gson().toJson(this.updateInfo));
 
         repaint();
     }
+
+//    public String[] bloqueLToString(Bloque[] bloques){
+//
+//        String[] result = new String[bloques.length];
+//        for (int i = 0; i < bloques.length; i++){
+//           result[i] =
+//        }
+//
+//    }
 
     /**
      * Sets the number of the floor

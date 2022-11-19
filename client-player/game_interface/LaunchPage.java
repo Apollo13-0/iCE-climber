@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import client.clientLogic;
 import game_interface.IceClimber;
 
 public class LaunchPage implements ActionListener {
@@ -40,14 +41,20 @@ public class LaunchPage implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+
         if(e.getSource()==myButton){
+
+            clientLogic client = new clientLogic(6666, "127.0.0.1");
+            client.writeSocket("{\"tipo\":\"solicitud juego\"}");
             frame.dispose();
-            var game = new IceClimber("Single");
+            var game = new IceClimber("Single", client);
             game.setVisible(true);
         }
         if(e.getSource()==myButton2){
+            clientLogic client = new clientLogic(6666, "127.0.0.1");
+            client.writeSocket("{\"tipo\":\"solicitud juego\"}");
             frame.dispose();
-            var game = new IceClimber("Coop");
+            var game = new IceClimber("Coop", client);
             game.setVisible(true);
         }
 
