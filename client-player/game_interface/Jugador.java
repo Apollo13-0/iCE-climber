@@ -21,9 +21,11 @@ public class Jugador extends Sprite {
     private float jumpStrength;
     private float weight;
     public int floorHeight = Constantes.HEIGHT - 61;
-    private boolean jump;
-    private int jumpCount;
-    private boolean trueJump;
+    public boolean jump;
+    public int jumpCount;
+    public boolean trueJump;
+    private boolean left;
+    private boolean right;
 
     /**
      * Number of player lifes
@@ -31,6 +33,12 @@ public class Jugador extends Sprite {
     private int vidas;
 
     private String tipoJugador;//Popo o Nana
+
+    public boolean isAttacking() {
+        return isAttacking;
+    }
+
+    private boolean isAttacking;
 
     public Jugador(String tipoJugador){
         this.tipoJugador = tipoJugador;
@@ -41,8 +49,10 @@ public class Jugador extends Sprite {
         y = floorHeight;
         speed = 3;
         weight = 1;
-
+        this.isAttacking = false;
         this.isDestroyed = false;
+        this.right = false;
+        this.left = false;
 
         this.jump = false;
         this.trueJump = false;
@@ -73,6 +83,8 @@ public class Jugador extends Sprite {
         if (this.trueJump){
             salto();
         }
+        golpe();
+
 
         if(x <= 0){
             x = 0;
@@ -95,7 +107,11 @@ public class Jugador extends Sprite {
             //System.out.println("salto");
         }
 
+
             if (this.jump){
+//                var ii = new ImageIcon("images/popojump.png"); //imagen nana
+//                image = ii.getImage();
+//                getImageDimensions();
 
                 if (this.jumpCount >= -10) {
 
@@ -134,18 +150,58 @@ public class Jugador extends Sprite {
 
     }
 
+    public void golpe(){
+//        var ii = new ImageIcon("images/popoattack.png"); //imagen nana
+//        image = ii.getImage();
+//        getImageDimensions();
+        if(this.isAttacking && this.left){
+            System.out.println("izq");
+            var ii = new ImageIcon("images/popoattackleft.png"); //imagen nana
+            image = ii.getImage();
+            getImageDimensions();
+        }
+        if(this.isAttacking && this.right){
+            System.out.println("der");
+            var ii = new ImageIcon("images/popoattackright.png"); //imagen nana
+            image = ii.getImage();
+            getImageDimensions();
+        }
+//        if(!this.left && !this.right){
+//            System.out.println("stand");
+//            var ii = new ImageIcon("images/popostand.png"); //imagen nana
+//            image = ii.getImage();
+//            getImageDimensions();
+//        }
+        if(!this.isAttacking){
+            //System.out.println("no hay ataque");
+            var ii = new ImageIcon("images/poporunright.png"); //imagen nana
+            image = ii.getImage();
+            getImageDimensions();
+        }
+    }
+
 
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
         if(tipoJugador.equals("Popo")){
             if(key == KeyEvent.VK_LEFT){
                 dx = -3;
+                this.right = false;
+                this.left = true;
+                this.isAttacking = false;
             }
             if(key == KeyEvent.VK_RIGHT){
                 dx = 3;
+                this.left = false;
+                this.isAttacking = false;
+                this.right = true;
             }
-            if(key == KeyEvent.VK_UP) { //hay que revisar tambien
+            if(key == KeyEvent.VK_UP ) { //hay que revisar tambien
                 this.trueJump = true;
+            }
+            if(key == KeyEvent.VK_DOWN) { //hay que revisar tambien
+                this.isAttacking = true;
+                System.out.println("tecla");
             }
 
         }else{if(key == KeyEvent.VK_A){
@@ -166,13 +222,27 @@ public class Jugador extends Sprite {
         if(tipoJugador.equals("Popo")){
             if(key == KeyEvent.VK_LEFT){
                 dx = 0;
+                //this.left = true;
+//                this.right = false;
+//                this.left = false;
+//                this.isAttacking = false;
             }
             if(key == KeyEvent.VK_RIGHT){
                 dx = 0;
+                //this.right = true;
+//                this.right = false;
+//                this.left = false;
+//                this.isAttacking = false;
             }
 //            if (key == KeyEvent.VK_UP) {
 //                dy=0;
-//            }
+////            }
+            if(key == KeyEvent.VK_DOWN){
+                this.right = false;
+                this.left = false;
+                this.isAttacking = false;
+            }
+
 
         }else{
             if(key == KeyEvent.VK_A){

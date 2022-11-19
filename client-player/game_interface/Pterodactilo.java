@@ -1,26 +1,23 @@
 package game_interface;
+import javax.swing.*;
+import java.util.Random;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-
-public class Foca extends Sprite {
+public class Pterodactilo extends Sprite{
     private int dx;
     private int dy;
     private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
+    private int floor;
     private int points;
 
-    public Foca(int floor, String dir){
-        initFoca(floor, dir);
+    public Pterodactilo(int floor, String dir){
+        initPterodactilo(floor, dir);
 
     }
 
-    private void initFoca(int floor, String dir){
-        //this.x = x;
-        //this.y = y;
+    private void initPterodactilo(int floor, String dir){
+        this.x = 0;
+        this.y = 30;
         //this.floor = floor;
         this.points = Constantes.FOCA_POINTS;
         this.isDestroyed = false;
@@ -33,17 +30,18 @@ public class Foca extends Sprite {
     }
 
     private void loadImage(){
-        var ii = new ImageIcon("images/focaleft.png");
+        var ii = new ImageIcon("images/ptero.png");
         image = ii.getImage();
     }
 
-    @Override
     public void movement(){
         if(x <= 0 || x >= Constantes.WIDTH - imageWidth){
             speed = speed * -1;
         }
         x = x + speed;
-
+        //if(x >= Constantes.WIDTH - imageWidth){
+        //  x = Constantes.WIDTH - imageWidth;
+        //}
     }
 
     /**
@@ -52,12 +50,23 @@ public class Foca extends Sprite {
     private void resetState(){
         x = 100;
         y = 100;
+
+
     }
 
     /**
      * Indicates the direction of the foca
      */
     private String dir;
+
+    /**
+     *  builts a foca object in a desired floor
+     */
+    //public Foca(int floor, String dir){
+    //this.setName("foca");
+    //this.setSpritePath("resources\foca.png");
+    //this.setDir(dir);
+    // }
 
     /**
      *  Sets the floor and Y coords of the foca
@@ -68,7 +77,7 @@ public class Foca extends Sprite {
         this.setFloor(floor);
 
         // revisar coordenadas
-        switch (floor) {
+        switch (floor){
             case 1, 5, 9, 13 -> this.setY(549);
             case 2, 6, 10, 14 -> this.setY(404);
             case 3, 7, 11, 15 -> this.setY(259);

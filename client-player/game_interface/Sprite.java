@@ -18,6 +18,17 @@ public class Sprite {
     int y;
     int imageHeight;
     int imageWidth;
+
+    public int getImageBottom() {
+        return imageBottom;
+    }
+
+    public int getImageTop() {
+        return imageTop;
+    }
+
+    int imageBottom;
+    int imageTop;
     Image image;
 
     public boolean isDestroyed() {
@@ -31,12 +42,12 @@ public class Sprite {
     boolean isDestroyed;
 
     /**
-     *  Name of the enemy
+     *  Name of the player/enemy
      */
     String name;
 
     /**
-     * Indicates the current floor of the foca
+     * Indicates the current floor of the sprite
      */
     private int floor;
 
@@ -97,18 +108,18 @@ public class Sprite {
     }
 
     /**
-     * Gets Indicates the current floor of the foca.
+     * Gets Indicates the current floor of the player/enemy.
      *
-     * @return Value of Indicates the current floor of the foca.
+     * @return Value of Indicates the current floor of the player/enemy.
      */
     public int getFloor() {
         return floor;
     }
 
     /**
-     * Sets new Indicates the current floor of the foca.
+     * Sets new Indicates the current floor of the player/enemy.
      *
-     * @param floor New value of Indicates the current floor of the foca.
+     * @param floor New value of Indicates the current floor of the player/enemy.
      */
     public void setFloor(int floor) {
         this.floor = floor;
