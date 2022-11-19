@@ -23,23 +23,95 @@ import java.util.Objects;
 
 public class Board extends JPanel{
     private Timer timer;
+
+    /**
+     * indicates the state of the game
+     */
     private String message = "Game Over";
+
+    /**
+     * Indicates the type of game
+     */
     public String tipoJuego;
-    private Jugador jugador1; //Popo
-    private Jugador jugador2; //Nana
-    private int scoreJ1 = 0; //Puntos Popo
-    private int scoreJ2 = 0; //Puntos Nana
+
+    /**
+     * Sprite of popo
+     */
+    private Jugador jugador1;
+
+    /**
+     * Sprite of nana
+     */
+    private Jugador jugador2;
+
+    /**
+     * Score points of popo
+     */
+    private int scoreJ1 = 0;
+
+    /**
+     * Score points of nana
+     */
+    private int scoreJ2 = 0;
+
+    /**
+     * Indicates current level
+     */
     private int level;
+
+    /**
+     * Stores the number of popo's lives
+     */
     private int gameLives1;
+
+    /**
+     * Stores the number of nana's lives
+     */
     private int gameLives2;
+
+    /**
+     *
+     */
     private boolean inGame = true;
+
+    /**
+     * Class that handles the info for the server
+     */
     private updateInfo updateInfo;
+
+    /**
+     *  Client
+     */
     private clientLogic client;
+
+    /**
+     * Boolean indicates if is in bonus phase
+     */
     private boolean bonusPhase;
+
+    /**
+     * inf for floor label
+     */
     private int pisoA;
+
+    /**
+     * inf for floor label
+     */
     private int pisoB;
+
+    /**
+     * inf for floor label
+     */
     private int pisoC;
+
+    /**
+     * inf for floor label
+     */
     private int pisoD;
+
+    /**
+     * String for bonus label
+     */
     private String bonusLabel;
 
     //enemies
@@ -385,6 +457,10 @@ public class Board extends JPanel{
         repaint();
     }
 
+    /**
+     * Sets the number of the floor
+     * @param n int type of game
+     */
     private void setFloorLabel(int n){
         if (this.level == 3){
             this.bonusLabel = "Fase bonus";
