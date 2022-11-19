@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import client.clientLogic;
+import client.serverInfo;
 import game_interface.IceClimber;
+import com.google.gson.Gson;
 
 public class LaunchPage implements ActionListener {
 
@@ -15,6 +17,7 @@ public class LaunchPage implements ActionListener {
     JButton myButton = new JButton("Jugador 1");
     JButton myButton2 = new JButton("Jugador 2");
     JButton myButton3 = new JButton("Espectador");
+    client.serverInfo serverInfo = new serverInfo();
 
     public LaunchPage(){
 
@@ -47,15 +50,33 @@ public class LaunchPage implements ActionListener {
             clientLogic client = new clientLogic(6666, "127.0.0.1");
             client.writeSocket("{\"tipo\":\"solicitud juego\"}");
             frame.dispose();
-            var game = new IceClimber("Single", client);
-            game.setVisible(true);
+
+            Gson gson = new Gson();
+            serverInfo = gson.fromJson(client.readSockect(), serverInfo.class);
+
+             if (serverInfo.getFeedback() == 1 || serverInfo.getFeedback() == 2 ){
+                 var game = new IceClimber("Single", client);
+                 game.setVisible(true);
+             } else{
+                 System.out.println("maximo de jugadores");
+             }
         }
         if(e.getSource()==myButton2){
+
             clientLogic client = new clientLogic(6666, "127.0.0.1");
             client.writeSocket("{\"tipo\":\"solicitud juego\"}");
             frame.dispose();
-            var game = new IceClimber("Coop", client);
-            game.setVisible(true);
+
+            Gson gson = new Gson();
+            serverInfo = gson.fromJson(client.readSockect(), serverInfo.class);
+
+            if (serverInfo.getFeedback() == 1 || serverInfo.getFeedback() == 2 ){
+                var game = new IceClimber("Coop", client);
+                game.setVisible(true);
+            } else{
+                System.out.println("maximo de jugadores");
+            }
+
         }
 
 

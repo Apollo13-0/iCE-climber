@@ -94,14 +94,14 @@ public class clientLogic {
     /**
      *  este metodo no esta funcionando
      */
-    public void readSockect() {
+    public String readSockect() {
         try {
             String message = this.inputSocketInD.readUTF();
-            System.out.println(message);
+            return  message;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
     /**
