@@ -94,6 +94,11 @@ fd_set readfds;
 char *message = "ECHO Daemon v1.0 \r\n";
 int running = 1;
 
+/**
+ * @brief checks the input of the command line. If it is a message to create an enemy or fruit it sends it to the respective game
+ * 
+ * @return void* 
+ */
 void *check_cli(){
 	char inpt[256];
 	while(running == TRUE){
@@ -240,6 +245,15 @@ void *check_incoming_clients(){
 							//sends dissaproval
 							send(sd, response_to_request(REQUEST_DENIED), strlen(response_to_request(REQUEST_DENIED)),0);
 
+						}
+						
+					}
+					if (msg_type == "update"){
+						struct json_object *json_ID;
+						json_object_object_get_ex(parsed_json,"ID", &json_ID);
+						int id_int = json_object_get_int(json_ID);
+						if(id_int<=MAX_GAMES){
+							send_data_to_viewers(buffer, games[id_int]);
 						}
 						
 					}
