@@ -40,27 +40,27 @@ public class Sprite {
      */
     private int floor;
 
-    protected void setX(int x){
+    public void setX(int x){
         this.x = x;
     }
 
-    int getX(){
+    public int getX(){
         return x;
     }
 
-    protected void setY(int y){
+    public void setY(int y){
         this.y = y;
     }
 
-    int getY(){
+    public int getY(){
         return y;
     }
 
-    int getImageHeight(){
+    public int getImageHeight(){
         return imageHeight;
     }
 
-    int getImageWidth(){
+    public int getImageWidth(){
         return imageWidth;
     }
 

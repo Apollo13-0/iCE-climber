@@ -12,15 +12,6 @@ public class Jugador extends Sprite {
      */
     private int ID;
 
-    /**
-     *  Coord in x
-     */
-    private int xCoord;
-
-    /**
-     *  Coord in y
-     */
-    private int yCoord;
 
     private float dx;
     private float dy;
@@ -30,6 +21,9 @@ public class Jugador extends Sprite {
     private float jumpStrength;
     private float weight;
     public int floorHeight = Constantes.HEIGHT - 61;
+    private boolean jump;
+    private int jumpCount;
+    private boolean trueJump;
 
     /**
      * Number of player lifes
@@ -47,7 +41,13 @@ public class Jugador extends Sprite {
         y = floorHeight;
         speed = 3;
         weight = 1;
+
         this.isDestroyed = false;
+
+        this.jump = false;
+        this.trueJump = false;
+        this.jumpCount= 10;
+
         loadImage();
         getImageDimensions();
         resetState();
@@ -68,7 +68,10 @@ public class Jugador extends Sprite {
 
     public void movement(){
         x += dx;
-        y += dy;
+        //y -= dy;
+        if (this.trueJump){
+            salto();
+        }
 
         if(x <= 0){
             x = 0;
@@ -81,6 +84,56 @@ public class Jugador extends Sprite {
        // }
     }
 
+    public void checkOnGround(){
+
+    }
+
+    public void salto(){
+        if(!this.jump) { //hay que revisar tambien
+            this.jump = true;
+            //System.out.println("salto");
+        }
+
+            if (this.jump){
+
+                if (this.jumpCount >= -10) {
+
+                    int negative = 1;
+                    if (this.jumpCount < 0) {
+                        negative = -1;
+                    }
+                    this.y -= Math.pow(this.jumpCount, 2) * 0.5 * negative;
+                    this.jumpCount -= 1;
+
+                    // devuelve el jugador al primer nivel
+                    if (this.y == -78){
+                        this.y = 550;
+                        this.jump = false;
+                        this.jumpCount = 10;
+                        this.trueJump = false;
+                    }
+                    // tiene bug cuando se deja presionado SI HAY COLISION Y LAS SIGUITES COORDENADAS, SUBE DE PISO
+                    switch (this.y) {
+                        case 399, 253, 107 -> {
+                            this.jump = false;
+                            this.jumpCount = 10;
+                            this.trueJump = false;
+                            this.y += 5;
+                        }
+                    }
+
+                } else{
+                    this.jump = false;
+                    this.jumpCount = 10;
+                    this.trueJump = false;
+                    this.y+=5;
+                }
+            }
+
+
+    }
+
+
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
         if(tipoJugador.equals("Popo")){
@@ -90,16 +143,9 @@ public class Jugador extends Sprite {
             if(key == KeyEvent.VK_RIGHT){
                 dx = 3;
             }
-            if(key == KeyEvent.VK_UP && y >= floorHeight){ //hay que revisar tambien.
-                jumpStrength = 24;
-                dy -= jumpStrength;
-                jumpStrength -= weight;
-                System.out.println("salto");
+            if(key == KeyEvent.VK_UP) { //hay que revisar tambien
+                this.trueJump = true;
             }
-            if(y >= floorHeight){
-                y = floorHeight;
-            }
-
 
         }else{if(key == KeyEvent.VK_A){
             dx = -3;
@@ -108,10 +154,11 @@ public class Jugador extends Sprite {
                 dx = 3;
             }
             if(key == KeyEvent.VK_W){ //hay que revisar tambien.
-                dy = -2;
+                this.trueJump = true;
             }
         }
     }
+
 
     public void keyReleased(KeyEvent e){
         int key = e.getKeyCode();
@@ -122,9 +169,10 @@ public class Jugador extends Sprite {
             if(key == KeyEvent.VK_RIGHT){
                 dx = 0;
             }
-            if (key == KeyEvent.VK_UP){
-                dy = 0;
-            }
+//            if (key == KeyEvent.VK_UP) {
+//                dy=0;
+//            }
+
         }else{
             if(key == KeyEvent.VK_A){
                 dx = 0;
@@ -132,10 +180,18 @@ public class Jugador extends Sprite {
             if(key == KeyEvent.VK_D){
                 dx = 0;
             }
-            if (key == KeyEvent.VK_W){
-                dy = 0;
-            }
+//            if (key == KeyEvent.VK_W){
+//                dy = 0;
+//            }
         }
+    }
+
+    boolean isJump(){
+        return jump;
+    }
+
+    void setJump(boolean val){
+        jump = val;
     }
 
     private void resetState(){
@@ -164,15 +220,6 @@ public class Jugador extends Sprite {
     }
 
     /**
-     * Gets Coord in y.
-     *
-     * @return Value of Coord in y.
-     */
-    public int getYCoord() {
-        return yCoord;
-    }
-
-    /**
      * Sets new tipoJugador.
      *
      * @param tipoJugador New value of tipoJugador.
@@ -181,14 +228,6 @@ public class Jugador extends Sprite {
         this.tipoJugador = tipoJugador;
     }
 
-    /**
-     * Sets new Coord in y.
-     *
-     * @param yCoord New value of Coord in y.
-     */
-    public void setYCoord(int yCoord) {
-        this.yCoord = yCoord;
-    }
 
     /**
      * Gets tipoJugador.
@@ -197,24 +236,6 @@ public class Jugador extends Sprite {
      */
     public String getTipoJugador() {
         return tipoJugador;
-    }
-
-    /**
-     * Gets Coord in x.
-     *
-     * @return Value of Coord in x.
-     */
-    public int getXCoord() {
-        return xCoord;
-    }
-
-    /**
-     * Sets new Coord in x.
-     *
-     * @param xCoord New value of Coord in x.
-     */
-    public void setXCoord(int xCoord) {
-        this.xCoord = xCoord;
     }
 
     /**
