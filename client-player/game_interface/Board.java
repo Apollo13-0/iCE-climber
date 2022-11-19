@@ -211,12 +211,12 @@ public class Board extends JPanel{
         ///---------------------------PRUEBAS---------------------------------
        //final List<Sprite> enemigos = new ArrayList<>();
         foca = new Foca(4, "ID");
-        ave = new Ave(3);
-        ave2 = new Ave(2);
+  //      ave = new Ave(3);
+        //ave2 = new Ave(4);
 
         enemigos.add(foca);
-        enemigos.add(ave);
-        enemigos.add(ave2);
+       // enemigos.add(ave);
+       // enemigos.add(ave2);
 
         ///-------------------------------------------------------------------
 
@@ -513,7 +513,7 @@ public class Board extends JPanel{
 
         if (!infoServer.equals("ok")){
             Gson readSon = new Gson();
-            serverInfo = readSon.fromJson(client.readSockect(), serverInfo.class);
+            serverInfo = readSon.fromJson(infoServer, serverInfo.class);
 
             // Creacion de enemigos
             if (serverInfo.getNombre().equals("foca")){
