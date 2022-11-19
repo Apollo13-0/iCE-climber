@@ -21,6 +21,9 @@ import java.awt.event.KeyEvent;
 import java.util.IllegalFormatCodePointException;
 import java.util.Objects;
 
+/**
+ *
+ */
 public class Board extends JPanel{
     private Timer timer;
 
@@ -399,8 +402,6 @@ public class Board extends JPanel{
                 jugador1.keyPressed(e);
                 jugador2.keyPressed(e);
             }
-            //jugador1.keyPressed(e);
-            //jugador2.keyPressed(e);
         }
     }
 
@@ -423,9 +424,11 @@ public class Board extends JPanel{
      */
     private void doGameCycle(){
 
+        // Partida de un jugador
         if(this.tipoJuego.equals("Single")){
             jugador1.movement();
 
+            // LLega el nivel superior
             if (jugador1.getY() == -77){
                 this.level+=1;
                 setFloorLabel(1);
@@ -434,6 +437,7 @@ public class Board extends JPanel{
             this.updateInfo.setSingle(jugador1, this);
         }
 
+        // Partida cooperativa
         if(this.tipoJuego.equals("Coop")){
             jugador1.movement();
             jugador2.movement();
@@ -524,7 +528,7 @@ public class Board extends JPanel{
 
     /**
      * sets bonus phase
-     * @param bonusPhase boolean 
+     * @param bonusPhase boolean
      */
     public void setBonusPhase(boolean bonusPhase) {
         this.bonusPhase = bonusPhase;
