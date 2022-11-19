@@ -23,7 +23,7 @@ public class Foca extends Sprite {
         //this.x = x;
         //this.y = y;
         //this.floor = floor;
-        this.points = Constantes.YETI_POINTS;
+        this.points = Constantes.FOCA_POINTS;
         this.isDestroyed = false;
         this.setName("foca");
         this.setDir(dir);
