@@ -3,7 +3,7 @@ package game_interface;
 import javax.swing.*;
 
 public class Verduras extends Sprite{
-    private boolean taken;
+    //private boolean taken;
     private int points;
     private int tipo;
     private String verduraType;
@@ -16,7 +16,8 @@ public class Verduras extends Sprite{
         this.x = x;
         this.y = y;
         this.tipo = tipo;
-        taken = false;
+        this.isDestroyed = false;
+        //taken = false;
         loadImage();
         getImageDimensions();
     }
@@ -46,12 +47,12 @@ public class Verduras extends Sprite{
         }
     }
 
-    boolean isTaken(){
-        return taken;
-    }
-
-    void setTaken(boolean val){
-        taken = val;
-    }
+//    boolean isTaken(){
+//        return taken;
+//    }
+//
+//    void setTaken(boolean val){
+//        taken = val;
+//    }
 
 }

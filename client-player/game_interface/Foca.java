@@ -11,7 +11,6 @@ public class Foca extends Sprite {
     private int dy;
     private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
-    private boolean hit;
     private int floor;
     private int points;
 
@@ -25,7 +24,7 @@ public class Foca extends Sprite {
         //this.y = y;
         //this.floor = floor;
         this.points = Constantes.YETI_POINTS;
-        hit = false;
+        this.isDestroyed = false;
         this.setName("foca");
         this.setDir(dir);
         this.setFloorC(floor);

@@ -1,8 +1,14 @@
 package game_interface;
 
+import com.google.gson.Gson;
+import game_interface.Jugador;
+import game_interface.Foca;
+
+
 import client.updateInfo;
 import client.clientLogic;
-import com.google.gson.Gson;
+
+
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
