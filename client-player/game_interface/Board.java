@@ -148,6 +148,8 @@ public class Board extends JPanel{
     final List<Sprite> enemigos = new ArrayList<>();
     final List<Sprite2> spritesList = new ArrayList<>();
 
+    final List<Sprite> verduras = new ArrayList<>();
+
     /**
      * Blocks obj for each floor
      */
@@ -353,6 +355,13 @@ public class Board extends JPanel{
         for (int i = 0; i < this.enemigos.size(); i++){
             if(!this.enemigos.get(i).isDestroyed()) {
                 g2d.drawImage(this.enemigos.get(i).getImage(), this.enemigos.get(i).getX(), this.enemigos.get(i).getY(), this.enemigos.get(i).getImageWidth(), this.enemigos.get(i).getImageHeight(), this);
+
+            }
+        }
+
+        for (int i = 0; i < this.verduras.size(); i++){
+            if(!this.verduras.get(i).isDestroyed()) {
+                g2d.drawImage(this.verduras.get(i).getImage(), this.verduras.get(i).getX(), this.verduras.get(i).getY(), this.verduras.get(i).getImageWidth(), this.verduras.get(i).getImageHeight(), this);
 
             }
         }
@@ -630,6 +639,48 @@ public class Board extends JPanel{
 
             }
         }
+
+        for (int k = 0; k < verduras.size(); k++){
+            if(jugador.getRectangle().intersects(verduras.get(k).getRectangle()) && this.bonusPhase){
+
+                if(enemigos.get(k).getName().equals("banano")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.BANANO_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.BANANO_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName().equals("berenjena")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.BERENJENA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.BERENJENA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName().equals("lechuga")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.LECHUGA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.LECHUGA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName().equals("naranja")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.NARANJA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.NARANJA_POINTS;
+                    }
+
+                }
+                verduras.get(k).setDestroyed(true);
+                verduras.remove(k);
+                break;
+
+            }
+        }
         for(int k = 0; k < enemigos.size(); k++){
             if(jugador.getRectangle().intersects(enemigos.get(k).getRectangle()) && jugador.isAttacking()){
                 System.out.println("colision");
@@ -658,49 +709,12 @@ public class Board extends JPanel{
 
                 }
 
-                //-----------------------------------------------------esto va en otro metodo igual solo que con lista de vegetales
-                if(enemigos.get(k).getName() == "banano"){
-                    if(jugador.getTipoJugador().equals("Popo")){
-                        this.scoreJ1 += Constantes.BANANO_POINTS;
-                    }else{
-                        this.scoreJ2 += Constantes.BANANO_POINTS;
-                    }
-
-                }
-                if(enemigos.get(k).getName() == "berenjena"){
-                    if(jugador.getTipoJugador().equals("Popo")){
-                        this.scoreJ1 += Constantes.BERENJENA_POINTS;
-                    }else{
-                        this.scoreJ2 += Constantes.BERENJENA_POINTS;
-                    }
-
-                }
-                if(enemigos.get(k).getName() == "lechuga"){
-                    if(jugador.getTipoJugador().equals("Popo")){
-                        this.scoreJ1 += Constantes.LECHUGA_POINTS;
-                    }else{
-                        this.scoreJ2 += Constantes.LECHUGA_POINTS;
-                    }
-
-                }
-                if(enemigos.get(k).getName() == "naranja"){
-                    if(jugador.getTipoJugador().equals("Popo")){
-                        this.scoreJ1 += Constantes.NARANJA_POINTS;
-                    }else{
-                        this.scoreJ2 += Constantes.NARANJA_POINTS;
-                    }
-
-                }
-
-                //----------------------------------------------------------------------------------------------
-
                 enemigos.get(k).setDestroyed(true);
                 enemigos.remove(k);
                 break;
             }
 
             if(!enemigos.isEmpty() && jugador.getRectangle().intersects(enemigos.get(k).getRectangle())){
-                System.out.println("canazo");
                 if(jugador == jugador1){
                     this.gameLives1 -= 1;
                 }else{
