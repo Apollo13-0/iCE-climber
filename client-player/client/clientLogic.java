@@ -83,9 +83,12 @@ public class clientLogic {
      */
     public void writeSocket(String jacksonStr) {
         try {
-            this.clientOutD.writeUTF(jacksonStr); // Envia json
-            String message = this.inputSocketInD.readUTF(); // lee json
-            System.out.println(message); // aqui deberia insertarlo en la clase que va a actualizarla info
+//<<<<<<< Updated upstream
+//            this.clientOutD.writeUTF(jacksonStr); // Envia json
+//            String message = this.inputSocketInD.readUTF(); // lee json
+//            System.out.println(message); // aqui deberia insertarlo en la clase que va a actualizarla info
+//=======
+            this.clientOutD.writeBytes(jacksonStr); // Envia json
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,14 +97,28 @@ public class clientLogic {
     /**
      *  este metodo no esta funcionando
      */
-    public void readSockect() {
+    public String readSockect() {
         try {
-            String message = this.inputSocketInD.readUTF();
-            System.out.println(message);
+
+            int c = this.inputSocketInD.readInt();
+
+            byte [] aux = null;
+            aux = new byte[c];
+
+
+            this.inputSocketInD.read(aux, 0, c); // Se leen los bytes
+            String message = new String (aux); // Se convierten a String
+
+            // Se lee el caracter nulo del final
+            this.inputSocketInD.read(aux,0,1);
+            
+            return  message;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     /**
