@@ -18,12 +18,33 @@
  * @brief containts the data of each game client
  * 
  */
-struct game {
+typedef struct game {
 	int game_num;
 	int sock_descriptor;
 	int viewers[MAX_VIEWERS_P_GAME];
 	int viewer_num;
-};
+}game;
+
+/**
+ * @brief global variables
+ * 
+ */
+int opt = TRUE;
+int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
+int max_sd;
+int game_num = 0;
+struct sockaddr_in address;
+struct game games[MAX_GAMES];
+char buffer[1025]; //data buffer of 1K
+	
+//set of socket descriptors
+fd_set readfds;
+	
+//a message
+char *message = "ECHO Daemon v1.0 \r\n";
+int running = 1;
+
+
 
 /**
  * @brief sends data received by games to its viewers
@@ -54,7 +75,7 @@ const char *response_to_request(int answer){
 	struct json_object *response_to_request = json_object_new_object();
 	json_object_object_add(response_to_request, "tipo", json_object_new_string("Respuesta solicitud"));
 	json_object_object_add(response_to_request, "feedback", json_object_new_int(answer));
-	char *feedback_string = json_object_to_json_string(response_to_request);
+	const char *feedback_string = json_object_to_json_string(response_to_request);
 	return feedback_string;
 }
 
@@ -65,34 +86,16 @@ const char *enemy_msg_string(char *cl_instruction){
 	struct json_object *enemy_json = json_object_new_object();
 	strtok(cl_instruction_tken, NULL);
 	json_object_object_add(enemy_json, "tipo", json_object_new_string("enemigo"));
-	json_object_object_add(enemy_json, "piso", json_object_new_int(cl_instruction_tken));
+	json_object_object_add(enemy_json, "piso", json_object_new_int(atoi(cl_instruction_tken)));
 	strtok(cl_instruction_tken, NULL);
 	json_object_object_add(enemy_json, "nombre", json_object_new_string(cl_instruction_tken));
 	strtok(cl_instruction_tken, NULL);
 	json_object_object_add(enemy_json, "direccion", json_object_new_string(cl_instruction_tken));
 	strtok(cl_instruction_tken, NULL);
-	char *enemy_json_string = json_object_to_json_string(enemy_json);
+	const char *enemy_json_string = json_object_to_json_string(enemy_json);
 	return enemy_json_string;
 }
 
-/**
- * @brief global variables
- * 
- */
-int opt = TRUE;
-int master_socket , addrlen , new_socket , client_socket[MAX_GAMES+MAX_VIEWERS_P_GAME], activity, i , valread , sd;
-int max_sd;
-int game_num;
-struct sockaddr_in address;
-struct game games[MAX_GAMES];
-char buffer[1025]; //data buffer of 1K
-	
-//set of socket descriptors
-fd_set readfds;
-	
-//a message
-char *message = "ECHO Daemon v1.0 \r\n";
-int running = 1;
 
 /**
  * @brief checks the input of the command line. If it is a message to create an enemy or fruit it sends it to the respective game
@@ -102,16 +105,16 @@ int running = 1;
 void *check_cli(){
 	char inpt[256];
 	while(running == TRUE){
-		gets(inpt);
+		scanf("%s", &inpt);
 		if (inpt == "exit"){
 			running = 0;
 		}
 		else
 		{
 
-			if(atoi(input[0]) <= MAX_GAMES){
-				char *item = enemy_msg_string(inpt[2]);
-				send(games[atoi[input[0]]-1], item, strlen(item), 0)
+			if((inpt[0]-'0') <= MAX_GAMES){
+				const char *item = enemy_msg_string(inpt+1);
+				send(games[(inpt[0]-'0')-1].sock_descriptor, item, strlen(item), 0);
 			}
 			
 		}
@@ -227,7 +230,7 @@ void *check_incoming_clients(){
 					parsed_json = json_tokener_parse(buffer);
 					json_object_object_get_ex(parsed_json,"tipo",&tipo);
 
-					char* msg_type = json_object_get_string(tipo);
+					const char* msg_type = json_object_get_string(tipo);
 
 					//solicitud de juego
 					if (msg_type == "solicitud juego"){
@@ -253,7 +256,7 @@ void *check_incoming_clients(){
 						json_object_object_get_ex(parsed_json,"ID", &json_ID);
 						int id_int = json_object_get_int(json_ID);
 						if(id_int<=MAX_GAMES){
-							send_data_to_viewers(buffer, games[id_int]);
+							send_data_to_viewers(buffer, games[id_int].sock_descriptor);
 						}
 						
 					}
@@ -332,7 +335,7 @@ int main(int argc , char *argv[])
 	pthread_t check_clients, check_commands;
 	pthread_create(&check_clients, NULL, check_incoming_clients, NULL);
 	pthread_join(check_clients, NULL);
-	pthread_create(&check_commandsm, NULL, check_cli, NULL);
+	pthread_create(&check_commands, NULL, check_cli, NULL);
 	pthread_join(check_clients, NULL);
 
 	return 0;
