@@ -86,8 +86,6 @@ public class clientLogic {
     public void writeSocket(String jacksonStr) {
         try {
             this.clientOutD.writeUTF(jacksonStr); // Envia json
-            //String message = this.inputSocketInD.readUTF(); // lee json
-            //System.out.println(message); // aqui deberia insertarlo en la clase que va a actualizarla info
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,10 +114,18 @@ public class clientLogic {
         }
     }
 
+    /**
+     * gets ID
+     * @return int
+     */
     public int getID() {
         return ID;
     }
 
+    /**
+     * sets id
+     * @param ID int
+     */
     public void setID(int ID) {
         this.ID = ID;
     }

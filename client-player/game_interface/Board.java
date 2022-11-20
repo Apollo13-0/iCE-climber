@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import game_interface.Jugador;
 import game_interface.Foca;
 
-
 import client.updateInfo;
 import client.clientLogic;
 import javax.swing.JPanel;
@@ -32,6 +31,10 @@ import java.util.Objects;
  *
  */
 public class Board extends JPanel{
+
+    /**
+     *
+     */
     private Timer timer;
 
     /**
@@ -124,20 +127,26 @@ public class Board extends JPanel{
      */
     private String bonusLabel;
 
+    /**
+     *  first server info
+     */
     private serverInfo serverInfo;
 
-
+    //----------------------------PRUEBAS----------------------------------------------
     private Foca foca;
     private Ave ave; //Hace falta meterlo en una lista.
     private Ave ave2;
-
+    //----------------------------PRUEBAS----------------------------------------------
     private Ave[] aves;
     private Hielo hielo;
+    //----------------------------PRUEBAS----------------------------------------------
+
     private Pterodactilo pterodactilo;
 
 
     //Lista de enemigos
     final List<Sprite> enemigos = new ArrayList<>();
+    final List<Sprite2> spritesList = new ArrayList<>();
 
     /**
      * Blocks obj for each floor
@@ -211,10 +220,11 @@ public class Board extends JPanel{
         ///---------------------------PRUEBAS---------------------------------
        //final List<Sprite> enemigos = new ArrayList<>();
         foca = new Foca(4, "ID");
+        Hielo hielo = new Hielo(4);
   //      ave = new Ave(3);
         //ave2 = new Ave(4);
 
-        enemigos.add(foca);
+        enemigos.add(hielo);
        // enemigos.add(ave);
        // enemigos.add(ave2);
 
@@ -459,7 +469,6 @@ public class Board extends JPanel{
 
             // LLega el nivel superior
             if (jugador1.getY() == -77){
-                this.level+=1;
                 setFloorLabel(1);
             }
 
@@ -478,7 +487,6 @@ public class Board extends JPanel{
 
             // Solo pasa el jugador 1 al siguiente nivel
             if (jugador1.getY() == -77){
-                this.level+=1;
                 this.gameLives2-=1;
                 jugador2.setY(550);
                 setFloorLabel(1);
@@ -486,7 +494,6 @@ public class Board extends JPanel{
 
             // Solo pasa el jugador 2 al siguiente nivel
             if (jugador2.getY() == -77){
-                this.level+=1;
                 this.gameLives1-=1;
                 jugador1.setY(550);
                 setFloorLabel(2);
@@ -494,7 +501,6 @@ public class Board extends JPanel{
 
             // ambos pasan al siguiente nivel
             if (jugador1.getY() == -77 && jugador2.getY() == -77){
-                this.level+=1;
                 setFloorLabel(3);
             }
 
@@ -531,16 +537,16 @@ public class Board extends JPanel{
 
             // Creacion de verduras
             if (serverInfo.getNombre().equals("banano")){
-                Foca newFoca = new Foca(serverInfo.getPiso(), serverInfo.getDireccion());
-                this.enemigos.add(newFoca);
+                Verduras newVerdura = new Verduras("banano");
+                this.enemigos.add(newVerdura);
             }
             if (serverInfo.getNombre().equals("berenjena")){
-                Ave newAve = new Ave(serverInfo.getPiso());
-                this.enemigos.add(newAve);
+                Verduras newVerdura = new Verduras("berenjena");
+                this.enemigos.add(newVerdura);
             }
             if (serverInfo.getNombre().equals("naranja")){
-                Hielo newHielo = new Hielo(serverInfo.getPiso());
-                this.enemigos.add(newHielo);
+                Verduras newVerdura = new Verduras("naranja");
+                this.enemigos.add(newVerdura);
             }
         }
         repaint();
@@ -560,25 +566,53 @@ public class Board extends JPanel{
      * @param n int type of game
      */
     private void setFloorLabel(int n){
-        if (this.level == 3){
+
+        this.pisoA+=4;
+        this.pisoB+=4;
+        this.pisoC+=4;
+        this.pisoD+=4;
+
+        if (this.pisoA == 9){
+
             this.bonusLabel = "Fase bonus";
+            this.level+=1;
+
             if (n == 1){
-                gameLives1+=1;
-            } else if(n ==2){
-                gameLives2+=1;
+                this.gameLives1+=1;
+            } else if(n == 2){
+                this.gameLives2+=1;
+                this.updateInfo.setLifePlayer2(this.gameLives2);
             } else if (n == 3){
-                gameLives1+=1;
-                gameLives2+=1;
+                this.gameLives1+=1;
+                this.gameLives2+=1;
             }
 
-            // aqui debe de recorrer la lista de enemigos y cambiar la velocidad a cada uno
-
-        } else {
-            this.pisoA+=4;
-            this.pisoB+=4;
-            this.pisoC+=4;
-            this.pisoD+=4;
         }
+
+        if (this.pisoA == 13){
+
+            this.bonusLabel = " ";
+            this.pisoA = 1;
+            this.pisoB = 2;
+            this.pisoC = 3;
+            this.pisoD = 4;
+
+            for (int i = 0; i < this.enemigos.size(); i++){
+                if(!this.enemigos.get(i).isDestroyed()) {
+                    if (this.enemigos.get(i).speed < 0){
+                        this.enemigos.get(i).speed-=2;
+                    }else{
+                        this.enemigos.get(i).speed+=2;
+                    }
+
+
+                }
+            }
+
+
+        }
+
+
     }
 
     /**
@@ -605,8 +639,7 @@ public class Board extends JPanel{
                     }else{
                         this.scoreJ2 += Constantes.AVE_POINTS;
                     }
-                    //this.scoreJ1 += Constantes.AVE_POINTS;
-                    System.out.println("golpe");
+
                 }
                 if(enemigos.get(k).getName() == "foca"){
                     if(jugador.getTipoJugador().equals("Popo")){
@@ -614,15 +647,59 @@ public class Board extends JPanel{
                     }else{
                         this.scoreJ2 += Constantes.FOCA_POINTS;
                     }
-                    //this.scoreJ1 += Constantes.FOCA_POINTS;
-                    System.out.println("golpefoca");
+
                 }
+                if(enemigos.get(k).getName() == "hielo"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.HIELO_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.HIELO_POINTS;
+                    }
+
+                }
+
+                //-----------------------------------------------------esto va en otro metodo igual solo que con lista de vegetales
+                if(enemigos.get(k).getName() == "banano"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.BANANO_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.BANANO_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName() == "berenjena"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.BERENJENA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.BERENJENA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName() == "lechuga"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.LECHUGA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.LECHUGA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName() == "naranja"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.NARANJA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.NARANJA_POINTS;
+                    }
+
+                }
+
+                //----------------------------------------------------------------------------------------------
 
                 enemigos.get(k).setDestroyed(true);
                 enemigos.remove(k);
-
+                break;
             }
-            if(jugador.getRectangle().intersects(enemigos.get(k).getRectangle())){
+
+            if(!enemigos.isEmpty() && jugador.getRectangle().intersects(enemigos.get(k).getRectangle())){
                 System.out.println("canazo");
                 if(jugador == jugador1){
                     this.gameLives1 -= 1;
@@ -630,7 +707,8 @@ public class Board extends JPanel{
                     this.gameLives2 -= 1;
                 }
 
-                jugador.y = 550;
+                jugador.y = Constantes.INIT_JUGADOR_Y;
+                jugador.x = Constantes.INIT_JUGADOR_X;
                 jugador.jump = false;
                 jugador.jumpCount = 10;
                 jugador.trueJump = false;
@@ -710,5 +788,59 @@ public class Board extends JPanel{
      */
     public int getScoreJ1() {
         return scoreJ1;
+    }
+
+    /**
+     * Gets Stores the number of popo's lives.
+     *
+     * @return Value of Stores the number of popo's lives.
+     */
+    public int getGameLives1() {
+        return gameLives1;
+    }
+
+    /**
+     * Sets new Stores the number of popo's lives.
+     *
+     * @param gameLives1 New value of Stores the number of popo's lives.
+     */
+    public void setGameLives1(int gameLives1) {
+        this.gameLives1 = gameLives1;
+    }
+
+    /**
+     * Gets Stores the number of nana's lives.
+     *
+     * @return Value of Stores the number of nana's lives.
+     */
+    public int getGameLives2() {
+        return gameLives2;
+    }
+
+    /**
+     * Sets new Stores the number of nana's lives.
+     *
+     * @param gameLives2 New value of Stores the number of nana's lives.
+     */
+    public void setGameLives2(int gameLives2) {
+        this.gameLives2 = gameLives2;
+    }
+
+    /**
+     * Gets enemigos.
+     *
+     * @return Value of enemigos.
+     */
+    public List<Sprite> getEnemigos() {
+        return enemigos;
+    }
+
+    /**
+     * Gets spritesList.
+     *
+     * @return Value of spritesList.
+     */
+    public List<Sprite2> getSpritesList() {
+        return spritesList;
     }
 }

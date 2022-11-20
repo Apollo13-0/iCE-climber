@@ -9,7 +9,7 @@ import java.awt.Image;
 public class Foca extends Sprite {
     private int dx;
     private int dy;
-    private int speed = 1; //Aumenta conforme aumenta el nivel.
+   // private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
     private int points;
 
@@ -91,4 +91,22 @@ public class Foca extends Sprite {
             System.out.println("Direción incorrecta");
         }
     }
+
+//    /**
+//     * Sets new speed.
+//     *
+//     * @param speed New value of speed.
+//     */
+//    public void setSpeed(int speed) {
+//        this.speed = speed;
+//    }
+//
+//    /**
+//     * Gets speed.
+//     *
+//     * @return Value of speed.
+//     */
+//    public int getSpeed() {
+//        return speed;
+//    }
 }

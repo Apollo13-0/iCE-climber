@@ -31,18 +31,22 @@ public class Verduras extends Sprite{
             case "banano":
                 var ii = new ImageIcon("images/banano.png");
                 image = ii.getImage();
+                this.points = Constantes.BANANO_POINTS;
                 break;
             case "berenjena":
                 ii = new ImageIcon("images/berenjena.png");
                 image = ii.getImage();
+                this.points = Constantes.BERENJENA_POINTS;
                 break;
             case "lechuga":
                 ii = new ImageIcon("images/lechuga.png");
                 image = ii.getImage();
+                this.points = Constantes.LECHUGA_POINTS;
                 break;
             case "naranja":
                 ii = new ImageIcon("images/naranja.png");
                 image = ii.getImage();
+                this.points = Constantes.NARANJA_POINTS;
                 break;
 
         }

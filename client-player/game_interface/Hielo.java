@@ -4,10 +4,11 @@ import javax.swing.*;
 import java.util.Random;
 
 public class Hielo extends Sprite{
-    private int speed = 1; //Aumenta conforme aumenta el nivel.
+   // private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
     private int points;
-    private int xRandom;
+    private int xR;
+
 
     public Hielo(int floor){
         initHielo(floor);
@@ -16,7 +17,8 @@ public class Hielo extends Sprite{
     private void initHielo(int floor){
 
         Random num = new Random();
-        this.xRandom = num.nextInt(780);
+        this.xR = num.nextInt(780);
+        this.x = xR;
         this.points = Constantes.HIELO_POINTS;
         this.isDestroyed = false;
         this.setName("hielo");
@@ -33,8 +35,11 @@ public class Hielo extends Sprite{
 
 
     public void movement(){
-        if(y <= 0 || y >= Constantes.HEIGHT - imageHeight){
+        if(y <= 0 ){
             speed = speed * -1;
+        }
+        if (y >= Constantes.HEIGHT - imageHeight){
+            this.isDestroyed = true;
         }
         y = y + speed;
     }
@@ -64,4 +69,22 @@ public class Hielo extends Sprite{
         }
 
     }
+//
+//    /**
+//     * Gets speed.
+//     *
+//     * @return Value of speed.
+//     */
+//    public int getSpeed() {
+//        return speed;
+//    }
+//
+//    /**
+//     * Sets new speed.
+//     *
+//     * @param speed New value of speed.
+//     */
+//    public void setSpeed(int speed) {
+//        this.speed = speed;
+//    }
 }

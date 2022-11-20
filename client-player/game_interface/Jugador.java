@@ -2,6 +2,7 @@ package game_interface;
 
 import game_interface.Sprite;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
@@ -33,6 +34,21 @@ public class Jugador extends Sprite {
     private int vidas;
 
     private String tipoJugador;//Popo o Nana
+
+    Image image;
+
+    Image getImage(){
+        return image;
+    }
+
+    Rectangle getRectangle(){
+        return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+    }
+
+    void getImageDimensions(){
+        imageWidth = image.getWidth(null);
+        imageHeight = image.getHeight(null);
+    }
 
     public boolean isAttacking() {
         return isAttacking;

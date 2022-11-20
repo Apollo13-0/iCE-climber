@@ -47,6 +47,7 @@ public class LaunchPage implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
 
+        // ----------------------------------------aqui falta implementar la creacion de 2 clientes------------------------------------
         if(e.getSource()==myButton){
 
             clientLogic client = new clientLogic(6666, "127.0.0.1");
@@ -57,6 +58,7 @@ public class LaunchPage implements ActionListener {
             serverInfo = gson.fromJson(client.readSockect(), serverInfo.class);
 
              if (serverInfo.getFeedback() == 1 || serverInfo.getFeedback() == 2 ){
+
                  client.setID(serverInfo.getFeedback());
                  var game = new IceClimber("Single", client);
                  game.setVisible(true);
@@ -80,6 +82,24 @@ public class LaunchPage implements ActionListener {
             } else{
                 System.out.println("maximo de jugadores");
             }
+
+        }
+        if(e.getSource()==myButton3){
+//----------------------------- AQUI VA LOGICA DE OBSERVADOR ------------------------------------------
+//            clientLogic client = new clientLogic(6666, "127.0.0.1");
+//            client.writeSocket("{\"tipo\":\"solicitud juego\"}");
+//            frame.dispose();
+//
+//            Gson gson = new Gson();
+//            serverInfo = gson.fromJson(client.readSockect(), serverInfo.class);
+//
+//            if (serverInfo.getFeedback() == 1 || serverInfo.getFeedback() == 2 ){
+//                client.setID(serverInfo.getFeedback());
+//                var game = new IceClimber("Coop", client);
+//                game.setVisible(true);
+//            } else{
+//                System.out.println("maximo de jugadores");
+//            }
 
         }
 
