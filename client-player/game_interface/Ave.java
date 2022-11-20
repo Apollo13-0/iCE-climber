@@ -9,12 +9,10 @@ import java.awt.*;
 import java.util.Random;
 
 public class Ave extends Sprite {
+
     private int dx;
     private int dy;
-    private int speed = 1; //Aumenta conforme aumenta el nivel.
     private int timer;
-    //private boolean hit;
-    private int floor;
     private int points;
     private boolean booleandir;
     private int n1;
@@ -25,20 +23,29 @@ public class Ave extends Sprite {
      */
     private String dir;
 
-
+    /**
+     * constructor
+     * @param floor
+     */
     public Ave(int floor){
         initAve(floor);
     }
 
+    /**
+     * Initiates the ave class
+     * @param floor
+     */
     private void initAve(int floor){
 
         this.isDestroyed = false;
         this.points = Constantes.AVE_POINTS;
+
         Random booleandir = new Random();
         Random num = new Random();
         this.booleandir = booleandir.nextBoolean();
         this.n1 = num.nextInt(400);
         this.n2 = num.nextInt(150);
+
         this.setName("ave");
         this.setDir();
         this.setFloorC(floor);
@@ -47,11 +54,18 @@ public class Ave extends Sprite {
 
     }
 
+    /**
+     * loads image
+     */
     private void loadImage(){
         var ii = new ImageIcon("images/ave.png");
         image = ii.getImage();
     }
 
+    /**
+     * Handles the movement of the sprite
+     */
+    @Override
     public void movement(){
 
         if(x <= 0 || x >= Constantes.WIDTH - imageWidth){

@@ -1,11 +1,9 @@
 package game_interface;
 
-import javax.swing.*;
-import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.*;
 
 
-public class Sprite {
+public class Sprite2 {
 
     /**
      *  Coord in x
@@ -29,7 +27,6 @@ public class Sprite {
 
     int imageBottom;
     int imageTop;
-    int speed = 1;
 
 
     public boolean isDestroyed() {
@@ -76,22 +73,6 @@ public class Sprite {
         return imageWidth;
     }
 
-    //--------------------------------------------------------------------------------------------------
-    Image image;
-
-    Image getImage(){
-        return image;
-    }
-
-    Rectangle getRectangle(){
-        return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
-    }
-
-    void getImageDimensions(){
-        imageWidth = image.getWidth(null);
-        imageHeight = image.getHeight(null);
-    }
-    //------------------------------------------------------------------------------------------------------
 
     public void movement(){};
     /**

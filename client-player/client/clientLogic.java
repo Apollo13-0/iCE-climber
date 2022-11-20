@@ -16,6 +16,8 @@ public class clientLogic {
      */
     private int port;
 
+    private int ID;
+
     /**
      * String containing the IP of the computer that the client is going connect.
      */
@@ -129,5 +131,21 @@ public class clientLogic {
             this.clientSocket.close();
         } catch (IOException ignored) {
         }
+    }
+
+    /**
+     * gets ID
+     * @return int
+     */
+    public int getID() {
+        return ID;
+    }
+
+    /**
+     * sets id
+     * @param ID int
+     */
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }

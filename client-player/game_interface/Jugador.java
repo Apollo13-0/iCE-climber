@@ -2,6 +2,7 @@ package game_interface;
 
 import game_interface.Sprite;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
@@ -21,9 +22,11 @@ public class Jugador extends Sprite {
     private float jumpStrength;
     private float weight;
     public int floorHeight = Constantes.HEIGHT - 61;
-    private boolean jump;
-    private int jumpCount;
-    private boolean trueJump;
+    public boolean jump;
+    public int jumpCount;
+    public boolean trueJump;
+    private boolean left;
+    private boolean right;
 
     /**
      * Number of player lifes
@@ -31,6 +34,27 @@ public class Jugador extends Sprite {
     private int vidas;
 
     private String tipoJugador;//Popo o Nana
+
+    Image image;
+
+    Image getImage(){
+        return image;
+    }
+
+    Rectangle getRectangle(){
+        return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+    }
+
+    void getImageDimensions(){
+        imageWidth = image.getWidth(null);
+        imageHeight = image.getHeight(null);
+    }
+
+    public boolean isAttacking() {
+        return isAttacking;
+    }
+
+    private boolean isAttacking;
 
     public Jugador(String tipoJugador){
         this.tipoJugador = tipoJugador;
@@ -41,8 +65,10 @@ public class Jugador extends Sprite {
         y = floorHeight;
         speed = 3;
         weight = 1;
-
+        this.isAttacking = false;
         this.isDestroyed = false;
+        this.right = false;
+        this.left = false;
 
         this.jump = false;
         this.trueJump = false;
@@ -61,17 +87,21 @@ public class Jugador extends Sprite {
             //Image scaleImage = ii.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
         }
         else{
-            var ii = new ImageIcon("images/popostand.png"); //imagen nana
+            System.out.println("nanaaa");
+            var ii = new ImageIcon("images/nanastand.png"); //imagen nana
             image = ii.getImage();
         }
     }
 
+    @Override
     public void movement(){
         x += dx;
         //y -= dy;
         if (this.trueJump){
             salto();
         }
+        golpe();
+
 
         if(x <= 0){
             x = 0;
@@ -94,7 +124,19 @@ public class Jugador extends Sprite {
             //System.out.println("salto");
         }
 
+
             if (this.jump){
+
+                if (this.tipoJugador.equals("Popo")){
+                    var ii = new ImageIcon("images/popojump.png"); //imagen nana
+                    image = ii.getImage();
+                    getImageDimensions();
+                } else{
+                    var ii = new ImageIcon("images/nanajump.png"); //imagen nana
+                    image = ii.getImage();
+                    getImageDimensions();
+                }
+
 
                 if (this.jumpCount >= -10) {
 
@@ -133,28 +175,101 @@ public class Jugador extends Sprite {
 
     }
 
+    public void golpe(){
+//        var ii = new ImageIcon("images/popoattack.png"); //imagen nana
+//        image = ii.getImage();
+//        getImageDimensions();
+        if(this.isAttacking && this.left){
+            System.out.println("izq");
+            if (this.getTipoJugador().equals("Popo")){
+                var ii = new ImageIcon("images/popoattackleft.png"); //imagen nana
+                image = ii.getImage();
+                getImageDimensions();
+            } else {
+                System.out.println("holaaaa");
+                var ii = new ImageIcon("images/nanaattackleft.png"); //imagen nana
+                image = ii.getImage();
+                getImageDimensions();
+            }
+        }
+        if(this.isAttacking && this.right){
+
+            if (this.tipoJugador.equals("Popo")){
+                var ii = new ImageIcon("images/popoattackright.png"); //imagen nana
+                image = ii.getImage();
+                getImageDimensions();
+            } else {
+                var ii = new ImageIcon("images/nanaattackright.png"); //imagen nana
+                image = ii.getImage();
+                getImageDimensions();
+            }
+        }
+//        if(!this.left && !this.right){
+//            System.out.println("stand");
+//            var ii = new ImageIcon("images/popostand.png"); //imagen nana
+//            image = ii.getImage();
+//            getImageDimensions();
+//        }
+        if(!this.isAttacking && !this.jump){
+
+            if (this.tipoJugador.equals("Popo")){
+                var ii = new ImageIcon("images/poporunright.png"); //imagen nana
+                image = ii.getImage();
+                getImageDimensions();
+            } else {
+                var ii = new ImageIcon("images/nanarunright.png"); //imagen nana
+                image = ii.getImage();
+                getImageDimensions();
+            }
+            //System.out.println("no hay ataque");
+
+        }
+    }
+
 
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
         if(tipoJugador.equals("Popo")){
             if(key == KeyEvent.VK_LEFT){
                 dx = -3;
+                this.right = false;
+                this.left = true;
+                this.isAttacking = false;
             }
             if(key == KeyEvent.VK_RIGHT){
                 dx = 3;
+                this.left = false;
+                this.isAttacking = false;
+                this.right = true;
             }
-            if(key == KeyEvent.VK_UP) { //hay que revisar tambien
+            if(key == KeyEvent.VK_UP ) { //hay que revisar tambien
                 this.trueJump = true;
             }
+            if(key == KeyEvent.VK_DOWN) { //hay que revisar tambien
+                this.isAttacking = true;
+                System.out.println("tecla");
+            }
 
-        }else{if(key == KeyEvent.VK_A){
+
+        }else{
+            if(key == KeyEvent.VK_A){
             dx = -3;
-        }
+                this.right = false;
+                this.left = true;
+                this.isAttacking = false;
+            }
             if(key == KeyEvent.VK_D){
                 dx = 3;
+                this.left = false;
+                this.isAttacking = false;
+                this.right = true;
             }
             if(key == KeyEvent.VK_W){ //hay que revisar tambien.
                 this.trueJump = true;
+            }
+            if(key == KeyEvent.VK_S) { //hay que revisar tambien
+                this.isAttacking = true;
+                System.out.println("tecla");
             }
         }
     }
@@ -165,13 +280,27 @@ public class Jugador extends Sprite {
         if(tipoJugador.equals("Popo")){
             if(key == KeyEvent.VK_LEFT){
                 dx = 0;
+                //this.left = true;
+//                this.right = false;
+//                this.left = false;
+//                this.isAttacking = false;
             }
             if(key == KeyEvent.VK_RIGHT){
                 dx = 0;
+                //this.right = true;
+//                this.right = false;
+//                this.left = false;
+//                this.isAttacking = false;
             }
 //            if (key == KeyEvent.VK_UP) {
 //                dy=0;
-//            }
+////            }
+            if(key == KeyEvent.VK_DOWN){
+                this.right = false;
+                this.left = false;
+                this.isAttacking = false;
+            }
+
 
         }else{
             if(key == KeyEvent.VK_A){
@@ -179,6 +308,11 @@ public class Jugador extends Sprite {
             }
             if(key == KeyEvent.VK_D){
                 dx = 0;
+            }
+            if(key == KeyEvent.VK_S){
+                this.right = false;
+                this.left = false;
+                this.isAttacking = false;
             }
 //            if (key == KeyEvent.VK_W){
 //                dy = 0;
