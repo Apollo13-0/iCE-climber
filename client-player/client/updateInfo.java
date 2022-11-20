@@ -2,6 +2,9 @@ package client;
 
 import game_interface.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class updateInfo {
 
     /**
@@ -52,17 +55,17 @@ public class updateInfo {
     /**
      *  all the sprites on the game
      */
-    private Sprite[] spritesList;
+    private List<Sprite2> spritesList;
 
     /**
      *  all the blocks on the game
      */
-    private Bloque[] bloqueList;
+    private List<Sprite2> bloqueList;
 
     /**
      *  all the bonus on the game
      */
-    private Verduras[] verdurasList;
+    private List<Sprite2> verdurasList;
 
     /**
      *  indicates if the game is in the bonus phase
@@ -77,7 +80,9 @@ public class updateInfo {
     /**
      *  constructor
      */
-    public updateInfo(){ }
+    public updateInfo(){
+
+    }
 
     /**
      * constructor with all the information
@@ -96,7 +101,7 @@ public class updateInfo {
      * @param bonusPhase boolean
      * @param level int
      */
-    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, Sprite[] spritesList,Bloque[] bloqueList,Verduras[] verdurasList, boolean bonusPhase, int level) {
+    public updateInfo(int ID, int player1X, int player1Y, int player2X, int player2Y, int lifePlayer1, int lifePlayer2, int scorePlayer1, int scorePlayer2, List<Sprite2> spritesList,List<Sprite2> bloqueList,List<Sprite2> verdurasList, boolean bonusPhase, int level) {
         this.ID = ID;
         this.player1X = player1X;
         this.player1Y = player1Y;
@@ -121,10 +126,11 @@ public class updateInfo {
     public void setSingle(Jugador jugador, Board board){
         this.setPlayer1X(jugador.getX());
         this.setPlayer1Y(jugador.getY());
-        this.setLifePlayer1(jugador.getVidas());
+        this.setLifePlayer1(board.getGameLives1());
         this.setScorePlayer1(board.getScoreJ1());
         this.setBonusPhase(board.getBonusPhase());
         this.setLevel(board.getLevel());
+        this.setSpritesList(board.getSpritesList());
     }
 
     /**
@@ -136,12 +142,12 @@ public class updateInfo {
     public void setCoop(Jugador jugador1, Jugador jugador2, Board board){
         this.setPlayer1X(jugador1.getX());
         this.setPlayer1Y(jugador1.getY());
-        this.setLifePlayer1(jugador1.getVidas());
+        this.setLifePlayer1(board.getGameLives1());
         this.setScorePlayer1(board.getScoreJ1());
 
         this.setPlayer2X(jugador2.getX());
         this.setPlayer2Y(jugador2.getY());
-        this.setLifePlayer2(jugador2.getVidas());
+        this.setLifePlayer2(board.getGameLives2());
         this.setScorePlayer2(board.getScoreJ2());
 
         this.setBonusPhase(board.getBonusPhase());
@@ -342,5 +348,55 @@ public class updateInfo {
      */
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    /**
+     * gets sprites list
+     * @return
+     */
+    public List<Sprite2> getSpritesList() {
+        return spritesList;
+    }
+
+    /**
+     * sets spriteList
+     * @param spritesList
+     */
+    public void setSpritesList(List<Sprite2> spritesList) {
+        this.spritesList = spritesList;
+    }
+
+    /**
+     * gets blockList
+     * @return
+     */
+    public List<Sprite2> getBloqueList() {
+        return bloqueList;
+    }
+
+    /**
+     * sets blocklist
+     * @param bloqueList
+     */
+    public void setBloqueList(List<Sprite2> bloqueList) {
+        this.bloqueList = bloqueList;
+    }
+
+    /**
+     * Sets new all the bonus on the game.
+     *
+     * @param verdurasList New value of all the bonus on the game.
+     */
+    public void setVerdurasList(List<Sprite2> verdurasList) {
+        this.verdurasList = verdurasList;
+    }
+
+    /**
+     * Gets all the bonus on the game.
+     *
+     * @return Value of all the bonus on the game.
+     */
+    public List<Sprite2> getVerdurasList() {
+        return verdurasList;
     }
 }

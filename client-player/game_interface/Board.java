@@ -1,15 +1,12 @@
 package game_interface;
 
+import client.serverInfo;
 import com.google.gson.Gson;
 import game_interface.Jugador;
 import game_interface.Foca;
 
-
 import client.updateInfo;
 import client.clientLogic;
-
-
-
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Color;
@@ -24,13 +21,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.*;
+import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
+import java.util.List;
 import java.util.Objects;
 
 /**
  *
  */
 public class Board extends JPanel{
+
+    /**
+     *
+     */
     private Timer timer;
 
     /**
@@ -123,11 +127,28 @@ public class Board extends JPanel{
      */
     private String bonusLabel;
 
-    //enemies
+    /**
+     *  first server info
+     */
+    private serverInfo serverInfo;
+
+    //----------------------------PRUEBAS----------------------------------------------
     private Foca foca;
     private Ave ave; //Hace falta meterlo en una lista.
     private Ave ave2;
+    //----------------------------PRUEBAS----------------------------------------------
     private Ave[] aves;
+    private Hielo hielo;
+    //----------------------------PRUEBAS----------------------------------------------
+
+    private Pterodactilo pterodactilo;
+
+
+    //Lista de enemigos
+    final List<Sprite> enemigos = new ArrayList<>();
+    final List<Sprite2> spritesList = new ArrayList<>();
+
+    final List<Sprite> verduras = new ArrayList<>();
 
     /**
      * Blocks obj for each floor
@@ -142,12 +163,12 @@ public class Board extends JPanel{
      * Constructor of Board class
      * @param tipoJuego String
      */
-    public Board(String tipoJuego){
-        initBoard(tipoJuego);
+    public Board(String tipoJuego, clientLogic client){
+        initBoard(tipoJuego, client);
     }
 
     /**
-     * Handles the creation of enemies, reads the server
+     * Handles the creation of enemigos, reads the server
      */
     public static void updateGameDetails(){
 
@@ -156,7 +177,8 @@ public class Board extends JPanel{
     /**
      * Inicializador de la clase game_interface.Board
      */
-    private void initBoard(String tipoJuego){
+    private void initBoard(String tipoJuego, clientLogic client){
+
         this.pisoA = 1;
         this.pisoB = 2;
         this.pisoC = 3;
@@ -164,12 +186,13 @@ public class Board extends JPanel{
         this.bonusLabel = "";
         this.tipoJuego = tipoJuego;
         this.level = 1;
+
         addKeyListener(new TAdapter());
         setFocusable(true);
         setPreferredSize(new Dimension(Constantes.WIDTH, Constantes.HEIGHT));
         setBackground(Color.BLACK);
         this.updateInfo = new updateInfo();
-        //this.client = new clientLogic(6666, "127.0.0.1");
+        this.client = client;
         gameInit();
     }
 
@@ -197,9 +220,16 @@ public class Board extends JPanel{
         }
 
         ///---------------------------PRUEBAS---------------------------------
+       //final List<Sprite> enemigos = new ArrayList<>();
         foca = new Foca(4, "ID");
-        ave = new Ave(3);
-        ave2 = new Ave(2);
+        Hielo hielo = new Hielo(4);
+  //      ave = new Ave(3);
+        //ave2 = new Ave(4);
+
+        enemigos.add(hielo);
+       // enemigos.add(ave);
+       // enemigos.add(ave2);
+
         ///-------------------------------------------------------------------
 
 
@@ -322,10 +352,23 @@ public class Board extends JPanel{
             g2d.drawImage(jugador2.getImage(),jugador2.getX(),jugador2.getY(),jugador2.getImageWidth(),jugador2.getImageHeight(),this);
         }
 
+        for (int i = 0; i < this.enemigos.size(); i++){
+            if(!this.enemigos.get(i).isDestroyed()) {
+                g2d.drawImage(this.enemigos.get(i).getImage(), this.enemigos.get(i).getX(), this.enemigos.get(i).getY(), this.enemigos.get(i).getImageWidth(), this.enemigos.get(i).getImageHeight(), this);
 
-        g2d.drawImage(foca.getImage(),foca.getX(),foca.getY(),foca.getImageWidth(),foca.getImageHeight(),this);
-        g2d.drawImage(ave.getImage(),ave.getX(),ave.getY(),ave.getImageWidth(),ave.getImageHeight(),this);
-        g2d.drawImage(ave2.getImage(),ave2.getX(),ave2.getY(),ave2.getImageWidth(),ave2.getImageHeight(),this);
+            }
+        }
+
+        for (int i = 0; i < this.verduras.size(); i++){
+            if(!this.verduras.get(i).isDestroyed()) {
+                g2d.drawImage(this.verduras.get(i).getImage(), this.verduras.get(i).getX(), this.verduras.get(i).getY(), this.verduras.get(i).getImageWidth(), this.verduras.get(i).getImageHeight(), this);
+
+            }
+        }
+
+//        g2d.drawImage(foca.getImage(),foca.getX(),foca.getY(),foca.getImageWidth(),foca.getImageHeight(),this);
+//        g2d.drawImage(ave.getImage(),ave.getX(),ave.getY(),ave.getImageWidth(),ave.getImageHeight(),this);
+//        g2d.drawImage(ave2.getImage(),ave2.getX(),ave2.getY(),ave2.getImageWidth(),ave2.getImageHeight(),this);
     }
 
     /**
@@ -391,8 +434,6 @@ public class Board extends JPanel{
                 jugador1.keyReleased(e);
                 jugador2.keyReleased(e);
             }
-            //jugador1.keyReleased(e);
-            //jugador2.keyReleased(e);
         }
 
         /**
@@ -433,24 +474,28 @@ public class Board extends JPanel{
         // Partida de un jugador
         if(this.tipoJuego.equals("Single")){
             jugador1.movement();
+            checkCollision(jugador1);
 
             // LLega el nivel superior
             if (jugador1.getY() == -77){
-                this.level+=1;
                 setFloorLabel(1);
             }
 
             this.updateInfo.setSingle(jugador1, this);
+            //this.updateInfo.setSpritesList(this.enemies);
+            //this.updateInfo.setBloqueList(bloques1p);
+
         }
 
         // Partida cooperativa
         if(this.tipoJuego.equals("Coop")){
             jugador1.movement();
             jugador2.movement();
+            checkCollision(jugador1);
+            checkCollision(jugador2);
 
             // Solo pasa el jugador 1 al siguiente nivel
             if (jugador1.getY() == -77){
-                this.level+=1;
                 this.gameLives2-=1;
                 jugador2.setY(550);
                 setFloorLabel(1);
@@ -458,7 +503,6 @@ public class Board extends JPanel{
 
             // Solo pasa el jugador 2 al siguiente nivel
             if (jugador2.getY() == -77){
-                this.level+=1;
                 this.gameLives1-=1;
                 jugador1.setY(550);
                 setFloorLabel(2);
@@ -466,46 +510,118 @@ public class Board extends JPanel{
 
             // ambos pasan al siguiente nivel
             if (jugador1.getY() == -77 && jugador2.getY() == -77){
-                this.level+=1;
                 setFloorLabel(3);
             }
 
             this.updateInfo.setCoop(jugador1, jugador2, this);
+            //this.updateInfo.setSpritesList(this.enemies);
         }
 
-        foca.movement();
-        ave.movement();
-        ave2.movement();
+        for(int i = 0; i < this.enemigos.size(); i++){
+            this.enemigos.get(i).movement();
+        }
 
-        //this.client.writeSocket(new Gson().toJson(this.updateInfo));
 
+        this.client.writeSocket(new Gson().toJson(this.updateInfo));
+
+        String infoServer = client.readSockect();
+
+        if (!infoServer.equals("ok")){
+            Gson readSon = new Gson();
+            serverInfo = readSon.fromJson(infoServer, serverInfo.class);
+
+            // Creacion de enemigos
+            if (serverInfo.getNombre().equals("foca")){
+                Foca newFoca = new Foca(serverInfo.getPiso(), serverInfo.getDireccion());
+                this.enemigos.add(newFoca);
+            }
+            if (serverInfo.getNombre().equals("ave")){
+                Ave newAve = new Ave(serverInfo.getPiso());
+                this.enemigos.add(newAve);
+            }
+            if (serverInfo.getNombre().equals("hielo")){
+                Hielo newHielo = new Hielo(serverInfo.getPiso());
+                this.enemigos.add(newHielo);
+            }
+
+            // Creacion de verduras
+            if (serverInfo.getNombre().equals("banano")){
+                Verduras newVerdura = new Verduras("banano");
+                this.enemigos.add(newVerdura);
+            }
+            if (serverInfo.getNombre().equals("berenjena")){
+                Verduras newVerdura = new Verduras("berenjena");
+                this.enemigos.add(newVerdura);
+            }
+            if (serverInfo.getNombre().equals("naranja")){
+                Verduras newVerdura = new Verduras("naranja");
+                this.enemigos.add(newVerdura);
+            }
+        }
         repaint();
     }
+
+//    public String[] bloqueLToString(Bloque[] bloques){
+//
+//        String[] result = new String[bloques.length];
+//        for (int i = 0; i < bloques.length; i++){
+//           result[i] =
+//        }
+//
+//    }
 
     /**
      * Sets the number of the floor
      * @param n int type of game
      */
     private void setFloorLabel(int n){
-        if (this.level == 3){
+
+        this.pisoA+=4;
+        this.pisoB+=4;
+        this.pisoC+=4;
+        this.pisoD+=4;
+
+        if (this.pisoA == 9){
+
             this.bonusLabel = "Fase bonus";
+            this.level+=1;
+
             if (n == 1){
-                gameLives1+=1;
-            } else if(n ==2){
-                gameLives2+=1;
+                this.gameLives1+=1;
+            } else if(n == 2){
+                this.gameLives2+=1;
+                this.updateInfo.setLifePlayer2(this.gameLives2);
             } else if (n == 3){
-                gameLives1+=1;
-                gameLives2+=1;
+                this.gameLives1+=1;
+                this.gameLives2+=1;
             }
 
-            // aqui debe de recorrer la lista de enemigos y cambiar la velocidad a cada uno
-
-        } else {
-            this.pisoA+=4;
-            this.pisoB+=4;
-            this.pisoC+=4;
-            this.pisoD+=4;
         }
+
+        if (this.pisoA == 13){
+
+            this.bonusLabel = " ";
+            this.pisoA = 1;
+            this.pisoB = 2;
+            this.pisoC = 3;
+            this.pisoD = 4;
+
+            for (int i = 0; i < this.enemigos.size(); i++){
+                if(!this.enemigos.get(i).isDestroyed()) {
+                    if (this.enemigos.get(i).speed < 0){
+                        this.enemigos.get(i).speed-=2;
+                    }else{
+                        this.enemigos.get(i).speed+=2;
+                    }
+
+
+                }
+            }
+
+
+        }
+
+
     }
 
     /**
@@ -516,8 +632,102 @@ public class Board extends JPanel{
         timer.stop();
     }
 
-    private void checkCollision(){
+    private void checkCollision(Jugador jugador){
+        for(int k = 0; k < Constantes.NUMBER_OF_BLOCKS2; k++){ //Colision bloques, el cual hay que revisar metodo salto del jugador
+            if((jugador.getRectangle()).intersects((bloques2p[k].getRectangle()))){
+                bloques2p[k].setDestroyed(true);
 
+            }
+        }
+
+        for (int k = 0; k < verduras.size(); k++){
+            if(jugador.getRectangle().intersects(verduras.get(k).getRectangle()) && this.bonusPhase){
+
+                if(enemigos.get(k).getName().equals("banano")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.BANANO_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.BANANO_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName().equals("berenjena")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.BERENJENA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.BERENJENA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName().equals("lechuga")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.LECHUGA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.LECHUGA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName().equals("naranja")){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.NARANJA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.NARANJA_POINTS;
+                    }
+
+                }
+                verduras.get(k).setDestroyed(true);
+                verduras.remove(k);
+                break;
+
+            }
+        }
+        for(int k = 0; k < enemigos.size(); k++){
+            if(jugador.getRectangle().intersects(enemigos.get(k).getRectangle()) && jugador.isAttacking()){
+                System.out.println("colision");
+                if(enemigos.get(k).getName() == "ave"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.AVE_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.AVE_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName() == "foca"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.FOCA_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.FOCA_POINTS;
+                    }
+
+                }
+                if(enemigos.get(k).getName() == "hielo"){
+                    if(jugador.getTipoJugador().equals("Popo")){
+                        this.scoreJ1 += Constantes.HIELO_POINTS;
+                    }else{
+                        this.scoreJ2 += Constantes.HIELO_POINTS;
+                    }
+
+                }
+
+                enemigos.get(k).setDestroyed(true);
+                enemigos.remove(k);
+                break;
+            }
+
+            if(!enemigos.isEmpty() && jugador.getRectangle().intersects(enemigos.get(k).getRectangle())){
+                if(jugador == jugador1){
+                    this.gameLives1 -= 1;
+                }else{
+                    this.gameLives2 -= 1;
+                }
+
+                jugador.y = Constantes.INIT_JUGADOR_Y;
+                jugador.x = Constantes.INIT_JUGADOR_X;
+                jugador.jump = false;
+                jugador.jumpCount = 10;
+                jugador.trueJump = false;
+            }
+        }
     }
 
     private void checkLevel(int index){
@@ -592,5 +802,59 @@ public class Board extends JPanel{
      */
     public int getScoreJ1() {
         return scoreJ1;
+    }
+
+    /**
+     * Gets Stores the number of popo's lives.
+     *
+     * @return Value of Stores the number of popo's lives.
+     */
+    public int getGameLives1() {
+        return gameLives1;
+    }
+
+    /**
+     * Sets new Stores the number of popo's lives.
+     *
+     * @param gameLives1 New value of Stores the number of popo's lives.
+     */
+    public void setGameLives1(int gameLives1) {
+        this.gameLives1 = gameLives1;
+    }
+
+    /**
+     * Gets Stores the number of nana's lives.
+     *
+     * @return Value of Stores the number of nana's lives.
+     */
+    public int getGameLives2() {
+        return gameLives2;
+    }
+
+    /**
+     * Sets new Stores the number of nana's lives.
+     *
+     * @param gameLives2 New value of Stores the number of nana's lives.
+     */
+    public void setGameLives2(int gameLives2) {
+        this.gameLives2 = gameLives2;
+    }
+
+    /**
+     * Gets enemigos.
+     *
+     * @return Value of enemigos.
+     */
+    public List<Sprite> getEnemigos() {
+        return enemigos;
+    }
+
+    /**
+     * Gets spritesList.
+     *
+     * @return Value of spritesList.
+     */
+    public List<Sprite2> getSpritesList() {
+        return spritesList;
     }
 }
