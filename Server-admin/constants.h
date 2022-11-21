@@ -3,5 +3,5 @@
 #define MAX_VIEWERS_P_GAME 2
 #define TRUE 1
 #define FALSE 0
-#define PORT 8000
+#define PORT 6666
 #define REQUEST_DENIED -1
