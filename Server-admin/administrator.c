@@ -36,6 +36,9 @@ int game_num = 0;
 struct sockaddr_in address;
 struct game games[MAX_GAMES];
 char buffer[1025]; //data buffer of 1K
+char buffer2[1025];
+
+int buff_counter = 0;
 	
 //set of socket descriptors
 fd_set readfds;
@@ -52,7 +55,7 @@ int running = 1;
  * @param data 
  * @param sd 
  */
-void send_data_to_viewers(char *data, int sd){
+void send_data_to_viewers(const char *data, int sd){
 	int s_n;
 	for (s_n = 0; s_n<game_num;s_n++){
 		if(games[s_n].sock_descriptor == sd){
@@ -61,6 +64,12 @@ void send_data_to_viewers(char *data, int sd){
 	}
 	int i;
 	for(i = 0; i<games[s_n].viewer_num;i++){
+		
+		printf("%s\n", data);
+		
+		uint32_t  size = htonl(strlen(data));
+		send(sd,&size, sizeof(uint32_t),0);
+		send(sd, data, strlen(data)+1,0);
 		send(games[s_n].viewers[i], data, strlen(data), 0);
 	}
 }
@@ -106,15 +115,17 @@ void *check_cli(){
 	char inpt[256];
 	while(running == TRUE){
 		scanf("%s", &inpt);
-		if (inpt == "exit"){
-			running = 0;
+		if (inpt == "exit\n"){
+			running = FALSE;
 		}
 		else
 		{
 
 			if((inpt[0]-'0') <= MAX_GAMES){
 				const char *item = enemy_msg_string(inpt+1);
-				send(games[(inpt[0]-'0')-1].sock_descriptor, item, strlen(item), 0);
+				uint32_t size = htonl(strlen(item));
+				send(games[(inpt[0]-'0')-1].sock_descriptor, &size, sizeof(uint32_t),0);
+				send(games[(inpt[0]-'0')-1].sock_descriptor, item, strlen(item)+1, 0);
 			}
 			
 		}
@@ -173,12 +184,12 @@ void *check_incoming_clients(){
 					new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
 		    
 			//send new connection greeting message
-			if( send(new_socket, message, strlen(message), 0) != strlen(message) )
-			{
-				perror("send");
-			}
+			//if( send(new_socket, message, strlen(message), 0) != strlen(message) )
+			//{
+			//	perror("send");
+			//}
 			
-			puts("Welcome message sent successfully");
+			//puts("Welcome message sent successfully");
 				
 			//add new socket to array of sockets
 			for (i = 0; i < MAX_GAMES+MAX_VIEWERS_P_GAME; i++)
@@ -216,57 +227,94 @@ void *check_incoming_clients(){
 					client_socket[i] = 0;
 				}
 					
-				//Echo back the message that came in
+				
 				else
 				{
 					//set the string terminating NULL byte on the end
 					//of the data read
 					buffer[valread] = '\0';
-					
-					//json parsing
-					struct json_object *parsed_json;
-					struct json_object *tipo;
+					buff_counter = buff_counter+strlen(buffer);
+					//printf("buffer %s\n", buffer);
+					strcat(buffer2, buffer);
+					if(buffer2[strlen(buffer2)-1] == '}'){
+						//json parsing
+						buffer2[buff_counter+1]='\0';
+						printf("el mensaje es: %s\n", buffer2);
+						struct json_object *parsed_json;
+						struct json_object *tipo;
+						const char* mensaje = buffer2;
+						parsed_json = json_tokener_parse(mensaje);
+						json_object_object_get_ex(parsed_json,"tipo",&tipo);
 
-					parsed_json = json_tokener_parse(buffer);
-					json_object_object_get_ex(parsed_json,"tipo",&tipo);
+						const char* msg_type = json_object_get_string(tipo);
+						printf("tipo de mensaje: %s\n", msg_type);
+						//solicitud de juego
+						if (strcmp(msg_type, "solicitud juego")==0){
+							//revisa si la cantidad maxima de juegos no ha sido alcanzada
+							printf("solicitud  de juego recibida\n");
+							if (game_num<MAX_GAMES){
+								printf("Solicitud aprobada\n");
+								games[game_num].game_num = game_num;
+								games[game_num].sock_descriptor = sd;
+								game_num++;
+								//sends aproval and game number
+								
+								const char* response_msg = response_to_request(game_num);
+								printf("%s\n", response_msg);
+							
+								uint32_t  size = htonl(strlen(response_msg));
+								send(sd,&size, sizeof(uint32_t),0);
+								send(sd, response_msg, strlen(response_msg)+1,0);
+								
+								
+							}
+							else
+							{
 
-					const char* msg_type = json_object_get_string(tipo);
+								//sends dissaproval
+								const char* response_msg = response_to_request(REQUEST_DENIED);
+								printf("%s\n", response_msg);
+								printf("%d\n", strlen(response_msg));
+								uint32_t  size = htonl(strlen(response_msg));
+								send(sd,&size, sizeof(uint32_t),0);
+								send(sd, response_msg, strlen(response_msg)+1,0);
+								
+								
 
-					//solicitud de juego
-					if (msg_type == "solicitud juego"){
-						//revisa si la cantidad maxima de juegos no ha sido alcanzada
-						if (game_num<MAX_GAMES){
-							games[game_num].game_num = game_num;
-							games[game_num].sock_descriptor = sd;
-							game_num++;
-							//sends aproval and game number
-							send(sd, response_to_request(game_num), strlen(response_to_request(game_num)),0);
+							}
+							
 						}
-						else
-						{
-
-							//sends dissaproval
-							send(sd, response_to_request(REQUEST_DENIED), strlen(response_to_request(REQUEST_DENIED)),0);
-
+						else if (strcmp(msg_type, "update")==0){
+							printf("Update received\n");
+							struct json_object *json_ID;
+							json_object_object_get_ex(parsed_json,"ID", &json_ID);
+							int id_int = json_object_get_int(json_ID)-1;
+							uint32_t  size = htonl(2);
+							send(sd,&size, sizeof(uint32_t),0);
+							send(sd, "ok", 4, 0);
+							if(id_int<=MAX_GAMES){
+								send_data_to_viewers(mensaje, games[id_int].sock_descriptor);
+							}
+							
 						}
 						
-					}
-					if (msg_type == "update"){
-						struct json_object *json_ID;
-						json_object_object_get_ex(parsed_json,"ID", &json_ID);
-						int id_int = json_object_get_int(json_ID);
-						if(id_int<=MAX_GAMES){
-							send_data_to_viewers(buffer, games[id_int].sock_descriptor);
-						}
+						
+						memset(buffer2,0,1025*sizeof(char));
+						buff_counter=0;
 						
 					}
-					
-
-					send(sd , buffer , strlen(buffer) , 0 );
 					printf("%s", buffer);
+					
+					
+					
 
 				}
+				
+						
 			}
+			
+			
+			
 		}
 	}
 
