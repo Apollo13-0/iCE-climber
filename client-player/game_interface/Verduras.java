@@ -19,7 +19,7 @@ public class Verduras extends Sprite{
         this.x = num.nextInt(780);
         setFloor(num.nextInt(3)+1);
 
-        this.verduraType = verduraType;
+        this.setName(verduraType);
         this.isDestroyed = false;
         //taken = false;
         loadImage();
@@ -27,7 +27,7 @@ public class Verduras extends Sprite{
     }
     private void loadImage(){
 
-        switch (verduraType){
+        switch (this.getName()){
             case "banano":
                 var ii = new ImageIcon("images/banano.png");
                 image = ii.getImage();
@@ -76,4 +76,21 @@ public class Verduras extends Sprite{
 //        taken = val;
 //    }
 
+    /**
+     * Gets verduraType.
+     *
+     * @return Value of verduraType.
+     */
+    public String getVerduraType() {
+        return verduraType;
+    }
+
+    /**
+     * Sets new verduraType.
+     *
+     * @param verduraType New value of verduraType.
+     */
+    public void setVerduraType(String verduraType) {
+        this.verduraType = verduraType;
+    }
 }

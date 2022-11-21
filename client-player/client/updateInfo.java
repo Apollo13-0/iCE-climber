@@ -77,11 +77,13 @@ public class updateInfo {
      */
     private int level;
 
+    private String tipo;
+
     /**
      *  constructor
      */
     public updateInfo(){
-
+        this.tipo = "update";
     }
 
     /**

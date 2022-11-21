@@ -428,11 +428,22 @@ public class Board extends JPanel{
          */
         @Override
         public void keyReleased(KeyEvent e){
+
             if(jugador2 == null){
-                jugador1.keyReleased(e);
+                if (client.getID() == 1){
+                    jugador1.keyReleased(e);
+                }else{
+                    jugador1.keyReleased2(e);
+                }
+
             }else{
-                jugador1.keyReleased(e);
-                jugador2.keyReleased(e);
+                if (client.getID() == 1){
+                    jugador1.keyReleased(e);
+                    jugador2.keyReleased(e);
+                }else{
+                    jugador1.keyReleased2(e);
+                    jugador2.keyReleased2(e);
+                }
             }
         }
 
@@ -444,10 +455,20 @@ public class Board extends JPanel{
         public void keyPressed(KeyEvent e){
 
             if(jugador2 == null){
-                jugador1.keyPressed(e);
+                if (client.getID() == 1){
+                    jugador1.keyPressed(e);
+                }else{
+                    jugador1.keyPressed2(e);
+                }
+
             }else{
-                jugador1.keyPressed(e);
-                jugador2.keyPressed(e);
+                if (client.getID() == 1){
+                    jugador1.keyPressed(e);
+                    jugador2.keyPressed(e);
+                }else{
+                    jugador1.keyPressed2(e);
+                    jugador2.keyPressed2(e);
+                }
             }
         }
     }
@@ -547,15 +568,15 @@ public class Board extends JPanel{
             // Creacion de verduras
             if (serverInfo.getNombre().equals("banano")){
                 Verduras newVerdura = new Verduras("banano");
-                this.enemigos.add(newVerdura);
+                this.verduras.add(newVerdura);
             }
             if (serverInfo.getNombre().equals("berenjena")){
                 Verduras newVerdura = new Verduras("berenjena");
-                this.enemigos.add(newVerdura);
+                this.verduras.add(newVerdura);
             }
             if (serverInfo.getNombre().equals("naranja")){
                 Verduras newVerdura = new Verduras("naranja");
-                this.enemigos.add(newVerdura);
+                this.verduras.add(newVerdura);
             }
         }
         repaint();
@@ -582,7 +603,7 @@ public class Board extends JPanel{
         this.pisoD+=4;
 
         if (this.pisoA == 9){
-
+            this.bonusPhase = true;
             this.bonusLabel = "Fase bonus";
             this.level+=1;
 
@@ -639,11 +660,30 @@ public class Board extends JPanel{
 
             }
         }
+        for(int k = 0; k < Constantes.NUMBER_OF_BLOCKS3; k++){ //Colision bloques, el cual hay que revisar metodo salto del jugador
+            if((jugador.getRectangle()).intersects((bloques3p[k].getRectangle()))){
+                bloques3p[k].setDestroyed(true);
+
+            }
+        }
+
+        for(int k = 0; k < Constantes.NUMBER_OF_BLOCKS4; k++){ //Colision bloques, el cual hay que revisar metodo salto del jugador
+            if((jugador.getRectangle()).intersects((bloques4p[k].getRectangle()))){
+                bloques4p[k].setDestroyed(true);
+
+            }
+        }
+        for(int k = 0; k < Constantes.NUMBER_OF_BLOCKS; k++){ //Colision bloques, el cual hay que revisar metodo salto del jugador
+            if((jugador.getRectangle()).intersects((bloques1p[k].getRectangle()))){
+                bloques1p[k].setDestroyed(true);
+
+            }
+        }
 
         for (int k = 0; k < verduras.size(); k++){
             if(jugador.getRectangle().intersects(verduras.get(k).getRectangle()) && this.bonusPhase){
 
-                if(enemigos.get(k).getName().equals("banano")){
+                if(verduras.get(k).getName().equals("banano")){
                     if(jugador.getTipoJugador().equals("Popo")){
                         this.scoreJ1 += Constantes.BANANO_POINTS;
                     }else{
@@ -651,7 +691,7 @@ public class Board extends JPanel{
                     }
 
                 }
-                if(enemigos.get(k).getName().equals("berenjena")){
+                if(verduras.get(k).getName().equals("berenjena")){
                     if(jugador.getTipoJugador().equals("Popo")){
                         this.scoreJ1 += Constantes.BERENJENA_POINTS;
                     }else{
@@ -659,7 +699,7 @@ public class Board extends JPanel{
                     }
 
                 }
-                if(enemigos.get(k).getName().equals("lechuga")){
+                if(verduras.get(k).getName().equals("lechuga")){
                     if(jugador.getTipoJugador().equals("Popo")){
                         this.scoreJ1 += Constantes.LECHUGA_POINTS;
                     }else{
@@ -667,7 +707,7 @@ public class Board extends JPanel{
                     }
 
                 }
-                if(enemigos.get(k).getName().equals("naranja")){
+                if(verduras.get(k).getName().equals("naranja")){
                     if(jugador.getTipoJugador().equals("Popo")){
                         this.scoreJ1 += Constantes.NARANJA_POINTS;
                     }else{
