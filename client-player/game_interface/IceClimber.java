@@ -14,7 +14,7 @@ public class IceClimber extends JFrame {
         add(new Board(tipoJuego, client));
         setTitle("Ice Climbers Game");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
         setResizable(false);
         //this.getContentPane().setBackground(Color.BLACK);
         pack();

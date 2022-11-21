@@ -229,6 +229,7 @@ public class Jugador extends Sprite {
 
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
+
         if(tipoJugador.equals("Popo")){
             if(key == KeyEvent.VK_LEFT){
                 dx = -3;
@@ -274,6 +275,54 @@ public class Jugador extends Sprite {
         }
     }
 
+    public void keyPressed2(KeyEvent e){
+        int key = e.getKeyCode();
+
+        if(tipoJugador.equals("Popo")){
+            if(key == KeyEvent.VK_J){
+                dx = -3;
+                this.right = false;
+                this.left = true;
+                this.isAttacking = false;
+            }
+            if(key == KeyEvent.VK_L){
+                dx = 3;
+                this.left = false;
+                this.isAttacking = false;
+                this.right = true;
+            }
+            if(key == KeyEvent.VK_I ) { //hay que revisar tambien
+                this.trueJump = true;
+            }
+            if(key == KeyEvent.VK_K) { //hay que revisar tambien
+                this.isAttacking = true;
+                System.out.println("tecla");
+            }
+
+
+        }else{
+            if(key == KeyEvent.VK_F){
+                dx = -3;
+                this.right = false;
+                this.left = true;
+                this.isAttacking = false;
+            }
+            if(key == KeyEvent.VK_H){
+                dx = 3;
+                this.left = false;
+                this.isAttacking = false;
+                this.right = true;
+            }
+            if(key == KeyEvent.VK_T){ //hay que revisar tambien.
+                this.trueJump = true;
+            }
+            if(key == KeyEvent.VK_G) { //hay que revisar tambien
+                this.isAttacking = true;
+                System.out.println("tecla");
+            }
+        }
+    }
+
 
     public void keyReleased(KeyEvent e){
         int key = e.getKeyCode();
@@ -301,7 +350,6 @@ public class Jugador extends Sprite {
                 this.isAttacking = false;
             }
 
-
         }else{
             if(key == KeyEvent.VK_A){
                 dx = 0;
@@ -310,6 +358,50 @@ public class Jugador extends Sprite {
                 dx = 0;
             }
             if(key == KeyEvent.VK_S){
+                this.right = false;
+                this.left = false;
+                this.isAttacking = false;
+            }
+//            if (key == KeyEvent.VK_W){
+//                dy = 0;
+//            }
+        }
+    }
+
+    public void keyReleased2(KeyEvent e){
+        int key = e.getKeyCode();
+        if(tipoJugador.equals("Popo")){
+            if(key == KeyEvent.VK_J){
+                dx = 0;
+                //this.left = true;
+//                this.right = false;
+//                this.left = false;
+//                this.isAttacking = false;
+            }
+            if(key == KeyEvent.VK_L){
+                dx = 0;
+                //this.right = true;
+//                this.right = false;
+//                this.left = false;
+//                this.isAttacking = false;
+            }
+//            if (key == KeyEvent.VK_UP) {
+//                dy=0;
+////            }
+            if(key == KeyEvent.VK_K){
+                this.right = false;
+                this.left = false;
+                this.isAttacking = false;
+            }
+
+        }else{
+            if(key == KeyEvent.VK_F){
+                dx = 0;
+            }
+            if(key == KeyEvent.VK_H){
+                dx = 0;
+            }
+            if(key == KeyEvent.VK_G){
                 this.right = false;
                 this.left = false;
                 this.isAttacking = false;
